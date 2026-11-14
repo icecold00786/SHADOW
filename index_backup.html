@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOW - Detective Game</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;font-family:Arial;
+color:white;text-align:center;
+background:linear-gradient(145deg,#080914,#17112d,#080914);
+}
+header{padding:28px 15px 15px}
+.logo{
+font-size:40px;font-weight:900;letter-spacing:8px;
+color:#b69cff;text-shadow:0 0 25px #8855ff;
+}
+.tagline{color:#aaa4c5;letter-spacing:3px;font-size:11px}
+.panel{
+width:90%;max-width:430px;margin:20px auto;
+padding:24px;background:#17172a;
+border:1px solid #393052;border-radius:22px;
+}
+input{
+width:100%;padding:15px;border:1px solid #51436f;
+border-radius:12px;background:#0c0d19;
+color:white;font-size:16px;margin:10px 0;
+}
+button{
+width:100%;padding:15px;margin-top:10px;
+border:0;border-radius:12px;color:white;
+font-size:15px;font-weight:bold;
+background:linear-gradient(90deg,#7042dc,#a14de8);
+}
+.secondary{background:#29263e;border:1px solid #51436f}
+#message{color:#c8b8ff;margin-top:15px}
+.room{
+display:none;margin-top:22px;padding:18px;
+border-radius:15px;background:#101020;
+border:1px solid #51436f;
+}
+.code{font-size:27px;letter-spacing:5px;color:#b69cff;font-weight:bold}
+.player{
+padding:12px;margin:8px 0;background:#24213a;
+border-radius:10px;text-align:left;
+}
+.small{font-size:12px;color:#aaa}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">SHADOW</div>
+<div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
+</header>
+
+<div class="panel">
+<h2>Welcome, Detective</h2>
+<p style="color:#aaa">Enter the mystery world</p>
+
+<input id="username" placeholder="Enter Your Username" maxlength="18">
+<button onclick="createRoom()">CREATE ROOM</button>
+
+<input id="roomCode" placeholder="Enter Room Code">
+<button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
+
+<div id="message"></div>
+
+<div class="room" id="room">
+<p class="small">YOUR ROOM CODE</p>
+<div class="code" id="displayCode"></div>
+<button class="secondary" onclick="copyCode()">COPY ROOM CODE</button>
+<h3>Players <span id="count">0</span>/20</h3>
+<div id="players"></div>
+<p class="small">Waiting for detectives to join...</p>
+</div>
+</div>
+
+<footer class="small">SHADOW © 2026 | THE MYSTERY BEGINS</footer>
+
+<script src="/socket.io/socket.io.js">
+socket.on("yourRole", (data) => {
+  document.getElementById("message").innerText = "YOUR ROLE: " + data.role;
+});
+
+</script>
+<script>
+const socket=io();
+
+function showRoom(code){
+document.getElementById("room").style.display="block";
+document.getElementById("displayCode").innerText=code;
+}
+
+function createRoom(){
+const username=document.getElementById("username").value.trim();
+if(!username){alert("Enter your username!");return;}
+socket.emit("createRoom",username);
+}
+
+function joinRoom(){
+const username=document.getElementById("username").value.trim();
+const roomCode=document.getElementById("roomCode").value.trim().toUpperCase();
+if(!username||!roomCode){alert("Enter username and room code!");return;}
+socket.emit("joinRoom",{username,roomCode});
+showRoom(roomCode);
+}
+
+function copyCode(){
+const code=document.getElementById("displayCode").innerText;
+navigator.clipboard.writeText(code);
+document.getElementById("message").innerText="Room code copied!";
+}
+
+socket.on("roomCreated",data=>{
+document.getElementById("roomCode").value=data.roomCode;
+document.getElementById("message").innerText="ROOM CREATED!";
+showRoom(data.roomCode);
+showPlayers(data.players);
+});
+
+socket.on("playerUpdate",players=>{
+showPlayers(players);
+});
+
+function showPlayers(players){
+document.getElementById("count").innerText=players.length;
+document.getElementById("players").innerHTML=players.map((p,i)=>
+'<div class="player">🕵️ '+p.username+(i===0?' <span class="small">• HOST</span>':'')+'</div>'
+).join("");
+}
+
+socket.on("errorMessage",msg=>{
+document.getElementById("message").innerText=msg;
+});
+const startButton = document.createElement("button");
+startButton.innerText = "START GAME";
+startButton.onclick = () => socket.emit("startGame");
+document.getElementById("room").appendChild(startButton);
+
+socket.on("gameStarted", () => {
+  document.getElementById("message").innerText = "GAME STARTED!";
+});
+</script>
+</body>
+</html>

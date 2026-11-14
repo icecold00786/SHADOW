@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHADOW - Detective Game</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial;color:white;text-align:center;background:linear-gradient(145deg,#080914,#17112d,#080914)}
+header{padding:28px 15px 15px}
+.logo{font-size:40px;font-weight:900;letter-spacing:8px;color:#b69cff;text-shadow:0 0 25px #8855ff}
+.tagline{color:#aaa4c5;letter-spacing:3px;font-size:11px}
+.panel{width:90%;max-width:430px;margin:20px auto;padding:24px;background:#17172a;border:1px solid #393052;border-radius:22px}
+input{width:100%;padding:15px;border:1px solid #51436f;border-radius:12px;background:#0c0d19;color:white;font-size:16px;margin:10px 0}
+button{width:100%;padding:14px;margin-top:10px;border:0;border-radius:12px;color:white;font-size:15px;font-weight:bold;background:linear-gradient(90deg,#7042dc,#a14de8)}
+.secondary{background:#29263e;border:1px solid #51436f}
+#message{color:#c8b8ff;margin-top:15px}
+.room,.game{display:none;margin-top:22px;padding:18px;border-radius:15px;background:#101020;border:1px solid #51436f}
+.code{font-size:27px;letter-spacing:5px;color:#b69cff;font-weight:bold}
+.player,.question{padding:12px;margin:8px 0;background:#24213a;border-radius:10px;text-align:left;overflow-wrap:anywhere}
+.small{font-size:12px;color:#aaa}
+#role{font-size:25px;font-weight:bold;color:#c8b8ff;margin:15px}
+h3{color:#c8b8ff}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">SHADOW</div>
+<div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
+</header>
+
+<div class="panel">
+<h2>Welcome, Detective</h2>
+<p class="small">Enter the mystery world</p>
+<input id="username" placeholder="Enter Your Username" maxlength="18">
+<button onclick="createRoom()">CREATE ROOM</button>
+<input id="roomCode" placeholder="Enter Room Code">
+<button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
+<div id="message"></div>
+
+<div class="room" id="room">
+<p class="small">YOUR ROOM CODE</p>
+<div class="code" id="displayCode"></div>
+<button class="secondary" onclick="copyCode()">COPY ROOM CODE</button>
+<h3>Players <span id="count">0</span>/20</h3>
+<div id="players"></div>
+<p class="small">Waiting for detectives to join...</p>
+<button id="startButton" onclick="startGame()">START GAME</button>
+</div>
+
+<div class="game" id="game">
+<h2 id="phaseTitle">GAME STARTED</h2>
+<div id="role"></div>
+<p id="gameInfo" class="small"></p>
+<div id="questionArea" style="display:none">
+<input id="questionInput" maxlength="200" placeholder="Write your question...">
+<button onclick="sendQuestion()">SEND QUESTION</button>
+<h3>Questions</h3>
+<div id="questions"></div>
+<button id="votingButton" class="secondary" style="display:none" onclick="startVoting()">START VOTING</button>
+</div>
+<div id="votingArea" style="display:none">
+<h3>Who is the Spy?</h3>
+<div id="votePlayers"></div>
+</div>
+<div id="resultArea"></div>
+</div>
+</div>
+<footer class="small">SHADOW © 2026 | THE MYSTERY BEGINS</footer>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket=io();
+let roomHost=false;
+
+function showRoom(code){
+ document.getElementById("room").style.display="block";
+ document.getElementById("displayCode").innerText=code;
+}
+function createRoom(){
+ const username=document.getElementById("username").value.trim();
+ if(!username)return alert("Enter your username!");
+ socket.emit("createRoom",username);
+}
+function joinRoom(){
+ const username=document.getElementById("username").value.trim();
+ const roomCode=document.getElementById("roomCode").value.trim().toUpperCase();
+ if(!username||!roomCode)return alert("Enter username and room code!");
+ socket.emit("joinRoom",{username,roomCode});
+ showRoom(roomCode);
+}
+function copyCode(){
+ navigator.clipboard.writeText(document.getElementById("displayCode").innerText);
+ document.getElementById("message").innerText="Room code copied!";
+}
+function startGame(){socket.emit("startGame")}
+function showPlayers(players){
+ document.getElementById("count").innerText=players.length;
+ document.getElementById("players").innerHTML=players.map(p=>'<div class="player">🕵️ '+safe(p.username)+'</div>').join("");
+}
+function safe(s){
+ const d=document.createElement("div");d.textContent=s;return d.innerHTML;
+}
+socket.on("roomCreated",data=>{
+ roomHost=true;
+ document.getElementById("roomCode").value=data.roomCode;
+ document.getElementById("message").innerText="ROOM CREATED!";
+ showRoom(data.roomCode);showPlayers(data.players);
+});
+socket.on("playerUpdate",showPlayers);
+socket.on("errorMessage",msg=>document.getElementById("message").innerText=msg);
+
+socket.on("yourRole",data=>{
+ document.getElementById("role").innerText="YOUR ROLE: "+data.role;
+});
+socket.on("gameStarted",data=>{
+ document.getElementById("room").style.display="none";
+ document.getElementById("game").style.display="block";
+ document.getElementById("phaseTitle").innerText="QUESTION ROUND";
+ document.getElementById("gameInfo").innerText="Ask questions and find the Spy!";
+ document.getElementById("questionArea").style.display="block";
+ document.getElementById("votingButton").style.display=roomHost?"block":"none";
+});
+function sendQuestion(){
+ const input=document.getElementById("questionInput");
+ if(!input.value.trim())return;
+ socket.emit("submitQuestion",input.value);
+ input.value="";
+}
+socket.on("questionUpdate",list=>{
+ document.getElementById("questions").innerHTML=list.map(q=>'<div class="question"><b>'+safe(q.username)+':</b> '+safe(q.question)+'</div>').join("");
+});
+function startVoting(){socket.emit("startVoting")}
+socket.on("votingStarted",players=>{
+ document.getElementById("phaseTitle").innerText="VOTING ROUND";
+ document.getElementById("gameInfo").innerText="Choose who you think is the Spy. You can vote only once.";
+ document.getElementById("questionArea").style.display="none";
+ document.getElementById("votingArea").style.display="block";
+ document.getElementById("votePlayers").innerHTML=players.map(name=>'<button onclick="voteFor('+JSON.stringify(name).replace(/</g,"\\u003c")+')">'+safe(name)+'</button>').join("");
+});
+function voteFor(name){
+ socket.emit("submitVote",name);
+ document.getElementById("gameInfo").innerText="Your vote has been submitted. Waiting for others...";
+ document.getElementById("votePlayers").innerHTML="";
+}
+socket.on("voteReceived",()=>document.getElementById("gameInfo").innerText="Vote submitted!");
+socket.on("gameResult",data=>{
+ document.getElementById("phaseTitle").innerText="GAME OVER";
+ document.getElementById("votingArea").style.display="none";
+ document.getElementById("resultArea").innerHTML="<h2>THE SPY WAS: "+safe(data.spy)+"</h2><h3>"+(data.caught?"DETECTIVES WIN!":"SPY WINS!")+"</h3><h3>VOTE RESULTS</h3>"+Object.entries(data.votes).map(([n,v])=>'<div class="player">'+safe(n)+": "+v+" votes</div>").join("");
+});
+</script>
+</body>
+</html>
