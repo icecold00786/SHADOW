@@ -65,7 +65,8 @@ io.on("connection", socket => {
     if(typeof question!=="string" || !question.trim() || question.length>200) return;
     const player=room.players.find(p=>p.id===socket.id);
     room.questions.push({username:player.username,question:question.trim()});
-    io.to(code).emit("questionUpdate",room.questions);
+console.log("QUESTION RECEIVED:",player.username,question);    
+io.to(code).emit("questionUpdate",room.questions);
   });
 
   socket.on("startVoting",()=>{
