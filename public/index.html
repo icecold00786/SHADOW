@@ -19,11 +19,12 @@ button:disabled{opacity:.4}
 .section{display:none;margin-top:20px;padding:16px;background:#100f1e;border:1px solid #403455;border-radius:14px}
 h2,h3{color:#c8aaff}
 .code{font-size:30px;letter-spacing:6px;color:#c5a0ff;font-weight:bold}
-.player,.clue,.vote{padding:12px;margin:8px 0;background:#28233b;border-radius:10px;text-align:left}
+.player,.clue{padding:12px;margin:8px 0;background:#28233b;border-radius:10px;text-align:left}
 .secret{padding:20px;background:#302344;border:1px solid #a47be8;border-radius:14px;margin:15px 0}
 .word{font-size:32px;font-weight:bold;letter-spacing:5px;color:#e3c9ff}
 #message{color:#e1c5ff;margin:12px}
 #resultArea{margin-top:15px}
+.winner{font-size:25px;font-weight:bold;color:#a8ffbd}
 footer{padding:25px;color:#777;font-size:11px}
 </style>
 </head>
@@ -35,8 +36,8 @@ footer{padding:25px;color:#777;font-size:11px}
 
 <div class="panel">
 <div id="lobby">
-<h2>Welcome, Detective</h2>
-<p class="small">Create a room or join your friends</p>
+<h2>Welcome to SHADOW</h2>
+<p class="small">3 INSIDERS. 1 SHADOW. TRUST NOBODY.</p>
 <input id="username" maxlength="18" placeholder="Enter your username">
 <button onclick="createRoom()">CREATE ROOM</button>
 <input id="roomCode" maxlength="8" placeholder="Enter room code">
@@ -47,49 +48,44 @@ footer{padding:25px;color:#777;font-size:11px}
 <p class="small">YOUR ROOM CODE</p>
 <div id="displayCode" class="code"></div>
 <button class="secondary" onclick="copyCode()">COPY ROOM CODE</button>
-<h3>Players <span id="count">0</span>/20</h3>
+<h3>Players <span id="count">0</span>/4</h3>
 <div id="players"></div>
-<p class="small">Minimum 4 players required</p>
+<p class="small">Exactly 4 players required</p>
 <button id="startButton" onclick="startGame()">START GAME</button>
 </div>
 
 <div id="game" class="section">
 <h2 id="phaseTitle">GAME STARTED</h2>
+
 <div id="secretCard" class="secret" style="display:none">
 <div id="role"></div>
 <p class="small" id="category"></p>
 <div id="secretWord" class="word"></div>
-<p class="small">Keep your word secret!</p>
+<p class="small" id="secretHint">Keep your secret safe!</p>
 </div>
+
 <p id="gameInfo" class="small"></p>
 
 <div id="clueArea" style="display:none">
 <h3>Clue Round</h3>
-<p class="small">Apne secret word se related ek clue do. Word reveal mat karna!</p>
-<input id="clueInput" maxlength="100" placeholder="Write your clue...">
-<button id="clueButton" onclick="sendClue()">SUBMIT CLUE</button>
+<p id="clueTurnInfo" class="small">Waiting for clue turn...</p>
+<input id="clueInput" maxlength="100" placeholder="Write your clue..." disabled>
+<button id="clueButton" onclick="sendClue()" disabled>SUBMIT CLUE</button>
 <div id="clues"></div>
 </div>
 
 <div id="discussionArea" style="display:none">
 <h3>Discussion Time</h3>
-<p class="small">Sab clues discuss karo aur spy ko pehchano.</p>
+<p class="small">Discuss the clues and find the Shadow!</p>
 <div id="discussionClues"></div>
 <button id="votingButton" onclick="startVoting()" style="display:none">START VOTING</button>
 </div>
 
 <div id="votingArea" style="display:none">
-<h3>Who is the Spy?</h3>
-<p class="small">Apne aap ko vote nahi kar sakte.</p>
+<h3>Secret Voting</h3>
+<p class="small">Choose who you think is the Shadow. You cannot vote for yourself.</p>
 <div id="votePlayers"></div>
 <p id="voteStatus" class="small"></p>
-</div>
-
-<div id="spyGuessArea" style="display:none">
-<h3>Spy's Last Chance!</h3>
-<p>Detectives ka original secret word guess karo.</p>
-<input id="spyGuessInput" maxlength="30" placeholder="Guess the secret word">
-<button onclick="submitSpyGuess()">SUBMIT GUESS</button>
 </div>
 
 <div id="resultArea"></div>
@@ -107,56 +103,62 @@ const socket=io();
 let roomHost=false;
 let myUsername="";
 let roomCode="";
-let gamePlayers=[];
 let myVoteSubmitted=false;
+let myClueTurn=false;
 
 const el=id=>document.getElementById(id);
 function message(t){el("message").innerText=t}
+
 function showPlayers(players){
- gamePlayers=players||[];
- el("count").innerText=gamePlayers.length;
+ el("count").innerText=players.length;
  el("players").innerHTML="";
- gamePlayers.forEach(p=>{
+ players.forEach(p=>{
   const d=document.createElement("div");
   d.className="player";
   d.innerText=p.username+(p.id===socket.id?" (YOU)":"");
   el("players").appendChild(d);
  });
  el("startButton").style.display=roomHost?"block":"none";
+ el("startButton").disabled=players.length!==4;
 }
+
 function createRoom(){
  myUsername=el("username").value.trim();
  if(!myUsername)return message("Enter your username!");
  socket.emit("createRoom",myUsername);
 }
+
 function joinRoom(){
  myUsername=el("username").value.trim();
  roomCode=el("roomCode").value.trim().toUpperCase();
  if(!myUsername||!roomCode)return message("Enter username and room code!");
  socket.emit("joinRoom",{username:myUsername,roomCode});
 }
+
 function copyCode(){
- if(navigator.clipboard)navigator.clipboard.writeText(roomCode).then(()=>message("Room code copied!")).catch(()=>message("Room code: "+roomCode));
- else message("Room code: "+roomCode);
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(roomCode)
+  .then(()=>message("Room code copied!"))
+  .catch(()=>message("Room code: "+roomCode));
+ }else message("Room code: "+roomCode);
 }
+
 function startGame(){socket.emit("startGame")}
+
 function sendClue(){
  const clue=el("clueInput").value.trim();
  if(!clue)return message("Write your clue first!");
+ if(!myClueTurn)return message("Wait for your turn!");
  socket.emit("submitClue",clue);
- el("clueButton").disabled=true;
+ myClueTurn=false;
  el("clueInput").disabled=true;
- message("Clue submitted. Waiting for others...");
+ el("clueButton").disabled=true;
+ message("Clue submitted. Waiting for next player...");
 }
+
 function startVoting(){socket.emit("startVoting")}
 function playAgain(){socket.emit("playAgain")}
-function submitSpyGuess(){
- const guess=el("spyGuessInput").value.trim();
- if(!guess)return message("Enter your guess!");
- socket.emit("spyGuess",guess);
- el("spyGuessArea").style.display="none";
- message("Guess submitted!");
-}
+
 function showClues(list,target){
  target.innerHTML="";
  (list||[]).forEach(item=>{
@@ -177,7 +179,7 @@ socket.on("roomCreated",data=>{
  el("room").style.display="block";
  el("displayCode").innerText=roomCode;
  showPlayers(data.players);
- message("Room created! Invite your friends.");
+ message("Room created! Invite exactly 3 friends.");
 });
 
 socket.on("roomJoined",data=>{
@@ -190,7 +192,7 @@ socket.on("roomJoined",data=>{
  message("Joined room successfully!");
 });
 
-socket.on("playerUpdate",players=>showPlayers(players));
+socket.on("playerUpdate",showPlayers);
 
 socket.on("hostChanged",data=>{
  roomHost=data.host===socket.id;
@@ -201,27 +203,43 @@ socket.on("hostChanged",data=>{
 socket.on("gameStarted",()=>{
  el("room").style.display="none";
  el("game").style.display="block";
- el("phaseTitle").innerText="SECRET WORD ROUND";
- el("gameInfo").innerText="Your private role and word are loading...";
+ el("phaseTitle").innerText="SECRET ROLE ROUND";
+ el("gameInfo").innerText="Your secret role is loading...";
  el("secretCard").style.display="none";
  el("clueArea").style.display="block";
  el("discussionArea").style.display="none";
  el("votingArea").style.display="none";
- el("spyGuessArea").style.display="none";
  el("resultArea").innerHTML="";
  el("playAgainButton").style.display="none";
- el("clueInput").disabled=false;
  el("clueInput").value="";
- el("clueButton").disabled=false;
+ el("clueInput").disabled=true;
+ el("clueButton").disabled=true;
+ el("clueTurnInfo").innerText="Waiting for your clue turn...";
+ myClueTurn=false;
  myVoteSubmitted=false;
 });
 
 socket.on("yourRole",data=>{
  el("secretCard").style.display="block";
  el("role").innerText=data.role;
- el("role").style.color=data.role==="SPY"?"#ff7777":"#a8ffbd";
- el("category").innerText="CATEGORY: "+data.category;
- el("secretWord").innerText=data.word;
+ el("role").style.color=data.role==="SHADOW"?"#ff7777":"#a8ffbd";
+ el("category").innerText=data.category?"CATEGORY: "+data.category:"";
+ el("secretWord").innerText=data.word||"NO WORD";
+ el("secretHint").innerText=data.role==="SHADOW"?"You have no secret word. Blend in!":"Keep your word secret!";
+});
+
+socket.on("clueTurn",data=>{
+ const mine=data.username===myUsername;
+ myClueTurn=mine;
+ el("clueTurnInfo").innerText="Clue "+data.index+" of "+data.total+" — "+data.username+"'s turn";
+ el("clueInput").disabled=!mine;
+ el("clueButton").disabled=!mine;
+ if(mine){
+  message("Your turn! Give one short clue.");
+  el("clueInput").focus();
+ }else{
+  message("Waiting for "+data.username+" to give a clue.");
+ }
 });
 
 socket.on("cluesUpdate",list=>{
@@ -230,11 +248,12 @@ socket.on("cluesUpdate",list=>{
 });
 
 socket.on("cluesComplete",()=>{
+ myClueTurn=false;
  el("phaseTitle").innerText="DISCUSSION ROUND";
  el("clueArea").style.display="none";
  el("discussionArea").style.display="block";
  el("votingButton").style.display=roomHost?"block":"none";
- message("All clues submitted! Discuss and find the spy.");
+ message("All clues submitted! Discuss and find the Shadow.");
 });
 
 socket.on("votingStarted",players=>{
@@ -244,6 +263,7 @@ socket.on("votingStarted",players=>{
  el("votePlayers").innerHTML="";
  el("voteStatus").innerText="Choose one player.";
  myVoteSubmitted=false;
+
  players.forEach(name=>{
   const b=document.createElement("button");
   b.className="vote secondary";
@@ -253,7 +273,7 @@ socket.on("votingStarted",players=>{
    if(myVoteSubmitted)return;
    socket.emit("submitVote",name);
    myVoteSubmitted=true;
-   el("voteStatus").innerText="Vote submitted. Waiting for others...";
+   el("voteStatus").innerText="Your vote is submitted. Waiting for others...";
    [...el("votePlayers").children].forEach(x=>x.disabled=true);
   };
   el("votePlayers").appendChild(b);
@@ -261,18 +281,7 @@ socket.on("votingStarted",players=>{
 });
 
 socket.on("voteReceived",()=>{
- el("voteStatus").innerText="Your vote has been received!";
-});
-
-socket.on("spyCaught",data=>{
- el("phaseTitle").innerText="SPY CAUGHT!";
- el("votingArea").style.display="none";
- message(data.username+" has been caught! But the spy gets one final guess...");
-});
-
-socket.on("spyGuessTurn",()=>{
- el("spyGuessArea").style.display="block";
- el("gameInfo").innerText="You are the spy. Guess the detectives' original word!";
+ el("voteStatus").innerText="Your secret vote has been received!";
 });
 
 socket.on("gameResult",data=>{
@@ -280,32 +289,38 @@ socket.on("gameResult",data=>{
  el("clueArea").style.display="none";
  el("discussionArea").style.display="none";
  el("votingArea").style.display="none";
- el("spyGuessArea").style.display="none";
  el("secretCard").style.display="block";
- let result=data.winner==="SPY"?"SPY WINS":"DETECTIVES WIN";
- let html="<h2>"+result+"</h2>";
- html+="<p>Spy: <b>"+data.spy+"</b></p>";
- html+="<p>Original Word: <b>"+data.word+"</b></p>";
- if(data.tie)html+="<p>Voting ended in a tie.</p>";
- else if(data.caught)html+="<p>Spy was caught. Guess was "+(data.spyGuessed?"CORRECT":"WRONG")+".</p>";
- else if(!data.caught)html+="<p>The spy was not caught.</p>";
+
+ const won=data.winner==="INSIDERS";
+ let html='<div class="winner">'+(won?"INSIDERS WIN!":"SHADOW WINS!")+'</div>';
+ html+="<p>Shadow: <b>"+data.spy+"</b></p>";
+ html+="<p>Secret Word: <b>"+data.word+"</b></p>";
+
+ if(data.tie){
+  html+="<p>Voting ended in a tie. No one was eliminated.</p>";
+ }else{
+  html+="<p>Eliminated: <b>"+data.eliminated+"</b></p>";
+  html+="<p>"+(data.caught?"The Shadow was caught!":"An Insider was eliminated. The Shadow escaped!")+"</p>";
+ }
+
  html+="<h3>Vote Results</h3>";
  Object.entries(data.votes||{}).forEach(([name,count])=>{
   html+="<p>"+name+": "+count+" vote(s)</p>";
  });
+
  el("resultArea").innerHTML=html;
  el("playAgainButton").style.display=roomHost?"block":"none";
+ message("The mystery has been solved!");
 });
 
 socket.on("gameReset",data=>{
  roomHost=data.host===socket.id;
  el("game").style.display="none";
  el("room").style.display="block";
+ el("secretCard").style.display="none";
  el("clueArea").style.display="none";
  el("discussionArea").style.display="none";
  el("votingArea").style.display="none";
- el("spyGuessArea").style.display="none";
- el("secretCard").style.display="none";
  el("resultArea").innerHTML="";
  el("playAgainButton").style.display="none";
  showPlayers(data.players);

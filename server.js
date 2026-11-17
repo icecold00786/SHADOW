@@ -5,18 +5,19 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+
 app.use(express.static("public"));
 
 const rooms = {};
 
-const wordPairs = [
-  { category: "SPORTS", word: "GOLF", spyWord: "POLO" },
-  { category: "FOOD", word: "RICE", spyWord: "CAKE" },
-  { category: "ANIMALS", word: "LION", spyWord: "BEAR" },
-  { category: "FRUITS", word: "PEAR", spyWord: "PLUM" },
-  { category: "PLACES", word: "PARK", spyWord: "MALL" },
-  { category: "OBJECTS", word: "LAMP", spyWord: "FORK" },
-  { category: "VEHICLES", word: "BIKE", spyWord: "CART" }
+const words = [
+  { category: "SPORTS", word: "GOLF" },
+  { category: "FOOD", word: "RICE" },
+  { category: "ANIMALS", word: "LION" },
+  { category: "FRUITS", word: "PEAR" },
+  { category: "PLACES", word: "PARK" },
+  { category: "OBJECTS", word: "LAMP" },
+  { category: "VEHICLES", word: "BIKE" }
 ];
 
 function findRoom(id) {
@@ -26,7 +27,9 @@ function findRoom(id) {
 }
 
 function sendPlayers(code) {
-  if (rooms[code]) io.to(code).emit("playerUpdate", rooms[code].players);
+  if (rooms[code]) {
+    io.to(code).emit("playerUpdate", rooms[code].players);
+  }
 }
 
 function resetRoom(code) {
@@ -35,16 +38,17 @@ function resetRoom(code) {
 
   room.phase = "lobby";
   room.word = null;
-  room.spyWord = null;
   room.category = null;
-  room.spy = null;
+  room.shadow = null;
   room.clues = {};
+  room.clueIndex = 0;
   room.votes = {};
 
   io.to(code).emit("gameReset", {
     players: room.players,
     host: room.host
   });
+
   sendPlayers(code);
 }
 
@@ -53,8 +57,11 @@ io.on("connection", socket => {
 
   socket.on("createRoom", username => {
     if (typeof username !== "string") return;
+
     username = username.trim().slice(0, 18);
-    if (!username) return socket.emit("errorMessage", "Enter a valid username!");
+    if (!username) {
+      return socket.emit("errorMessage", "Enter a valid username!");
+    }
 
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -74,7 +81,8 @@ io.on("connection", socket => {
   });
 
   socket.on("joinRoom", data => {
-    if (!data || typeof data.username !== "string" || typeof data.roomCode !== "string") return;
+    if (!data || typeof data.username !== "string" ||
+        typeof data.roomCode !== "string") return;
 
     const username = data.username.trim().slice(0, 18);
     const code = data.roomCode.trim().toUpperCase();
@@ -83,63 +91,82 @@ io.on("connection", socket => {
     if (!username) return socket.emit("errorMessage", "Enter a valid username!");
     if (!room) return socket.emit("errorMessage", "Room not found!");
     if (room.phase !== "lobby") return socket.emit("errorMessage", "Game already started!");
-    if (room.players.length >= 20) return socket.emit("errorMessage", "Room is full!");
-    if (room.players.some(p => p.username.toLowerCase() === username.toLowerCase()))
+    if (room.players.length >= 4) return socket.emit("errorMessage", "Room is full! Exactly 4 players allowed.");
+    if (room.players.some(p => p.username.toLowerCase() === username.toLowerCase())) {
       return socket.emit("errorMessage", "Username already taken!");
+    }
 
     room.players.push({ id: socket.id, username });
     socket.join(code);
+
     socket.emit("roomJoined", {
       roomCode: code,
       players: room.players,
       host: room.host
     });
+
     sendPlayers(code);
   });
 
   socket.on("startGame", () => {
     const code = findRoom(socket.id);
     if (!code) return;
+
     const room = rooms[code];
 
-    if (room.host !== socket.id) return socket.emit("errorMessage", "Only host can start!");
+    if (room.host !== socket.id) {
+      return socket.emit("errorMessage", "Only host can start!");
+    }
     if (room.phase !== "lobby") return;
-    if (room.players.length < 4)
-      return socket.emit("errorMessage", "At least 4 players required!");
+    if (room.players.length !== 4) {
+      return socket.emit("errorMessage", "Exactly 4 players are required!");
+    }
 
-    const pair = wordPairs[Math.floor(Math.random() * wordPairs.length)];
-    room.word = pair.word;
-    room.spyWord = pair.spyWord;
-    room.category = pair.category;
-    room.spy = room.players[Math.floor(Math.random() * room.players.length)].id;
+    const selected = words[Math.floor(Math.random() * words.length)];
+
+    room.word = selected.word;
+    room.category = selected.category;
+    room.shadow = room.players[Math.floor(Math.random() * 4)].id;
     room.phase = "clues";
     room.clues = {};
     room.votes = {};
+    room.clueIndex = 0;
 
     io.to(code).emit("gameStarted", {
       players: room.players.map(p => p.username)
     });
 
-    room.players.forEach(p => {
-      io.to(p.id).emit("yourRole", {
-        role: p.id === room.spy ? "SPY" : "DETECTIVE",
-        category: room.category,
-        word: p.id === room.spy ? room.spyWord : room.word
+    room.players.forEach(player => {
+      const isShadow = player.id === room.shadow;
+
+      io.to(player.id).emit("yourRole", {
+        role: isShadow ? "SHADOW" : "INSIDER",
+        category: isShadow ? "" : room.category,
+        word: isShadow ? "" : room.word
       });
+    });
+
+    io.to(code).emit("clueTurn", {
+      username: room.players[0].username,
+      index: 1,
+      total: 4
     });
   });
 
   socket.on("submitClue", clue => {
     const code = findRoom(socket.id);
     if (!code) return;
+
     const room = rooms[code];
 
     if (room.phase !== "clues") return;
     if (typeof clue !== "string" || !clue.trim() || clue.trim().length > 100) return;
-    if (room.clues[socket.id]) return socket.emit("errorMessage", "You already submitted your clue!");
+    if (room.clues[socket.id]) return;
+    if (room.players[room.clueIndex]?.id !== socket.id) {
+      return socket.emit("errorMessage", "Wait for your clue turn!");
+    }
 
-    const player = room.players.find(p => p.id === socket.id);
-    if (!player) return;
+    const player = room.players[room.clueIndex];
 
     room.clues[socket.id] = {
       username: player.username,
@@ -148,27 +175,43 @@ io.on("connection", socket => {
 
     io.to(code).emit("cluesUpdate", Object.values(room.clues));
 
-    if (Object.keys(room.clues).length === room.players.length) {
+    room.clueIndex++;
+
+    if (room.clueIndex === 4) {
       room.phase = "discussion";
       io.to(code).emit("cluesComplete");
+    } else {
+      io.to(code).emit("clueTurn", {
+        username: room.players[room.clueIndex].username,
+        index: room.clueIndex + 1,
+        total: 4
+      });
     }
   });
 
   socket.on("startVoting", () => {
     const code = findRoom(socket.id);
     if (!code) return;
+
     const room = rooms[code];
 
-    if (room.host !== socket.id) return socket.emit("errorMessage", "Only host can start voting!");
+    if (room.host !== socket.id) {
+      return socket.emit("errorMessage", "Only host can start voting!");
+    }
     if (room.phase !== "discussion") return;
 
     room.phase = "voting";
-    io.to(code).emit("votingStarted", room.players.map(p => p.username));
+    room.votes = {};
+
+    io.to(code).emit("votingStarted",
+      room.players.map(p => p.username)
+    );
   });
 
   socket.on("submitVote", username => {
     const code = findRoom(socket.id);
     if (!code) return;
+
     const room = rooms[code];
 
     if (room.phase !== "voting" || room.votes[socket.id]) return;
@@ -176,97 +219,54 @@ io.on("connection", socket => {
 
     const target = room.players.find(p => p.username === username);
     if (!target) return socket.emit("errorMessage", "Invalid vote!");
-    if (target.id === socket.id)
+    if (target.id === socket.id) {
       return socket.emit("errorMessage", "You cannot vote for yourself!");
+    }
 
     room.votes[socket.id] = target.id;
     socket.emit("voteReceived");
 
-    if (Object.keys(room.votes).length === room.players.length) {
-      const counts = {};
-      Object.values(room.votes).forEach(id => {
-        const player = room.players.find(p => p.id === id);
-        if (player) counts[player.username] = (counts[player.username] || 0) + 1;
-      });
+    if (Object.keys(room.votes).length !== 4) return;
 
-      const highest = Math.max(...Object.values(counts));
-      const leaders = Object.keys(counts).filter(n => counts[n] === highest);
+    const counts = {};
 
-      if (leaders.length !== 1) {
-        room.phase = "finished";
-        return io.to(code).emit("gameResult", {
-          spy: room.players.find(p => p.id === room.spy).username,
-          word: room.word,
-          votes: counts,
-          caught: false,
-          tie: true,
-          spyGuessed: false,
-          winner: "SPY"
-        });
+    Object.values(room.votes).forEach(id => {
+      const player = room.players.find(p => p.id === id);
+      if (player) {
+        counts[player.username] = (counts[player.username] || 0) + 1;
       }
+    });
 
-      const caughtPlayer = room.players.find(p => p.username === leaders[0]);
+    const highest = Math.max(...Object.values(counts));
+    const leaders = Object.keys(counts).filter(name => counts[name] === highest);
 
-      if (caughtPlayer.id === room.spy) {
-        room.phase = "spyGuess";
-        io.to(code).emit("spyCaught", { username: caughtPlayer.username });
-        io.to(room.spy).emit("spyGuessTurn", { message: "Guess the detectives' secret word!" });
-      } else {
-        room.phase = "finished";
-        io.to(code).emit("gameResult", {
-          spy: room.players.find(p => p.id === room.spy).username,
-          word: room.word,
-          votes: counts,
-          caught: false,
-          tie: false,
-          spyGuessed: false,
-          winner: "SPY"
-        });
-      }
-    }
-  });
+    const tie = leaders.length !== 1;
+    const eliminated = tie ? null : room.players.find(p => p.username === leaders[0]);
+    const caught = !!eliminated && eliminated.id === room.shadow;
 
-  socket.on("spyGuess", guess => {
-    const code = findRoom(socket.id);
-    if (!code) return;
-    const room = rooms[code];
-
-    if (room.phase !== "spyGuess" || socket.id !== room.spy) return;
-    if (typeof guess !== "string" || !guess.trim() || guess.length > 30) return;
-
-    const correct = guess.trim().toUpperCase() === room.word;
     room.phase = "finished";
 
     io.to(code).emit("gameResult", {
-      spy: room.players.find(p => p.id === room.spy).username,
+      spy: room.players.find(p => p.id === room.shadow).username,
       word: room.word,
-      votes: Object.fromEntries(
-        Object.entries(room.votes).map(([id, targetId]) => [
-          room.players.find(p => p.id === id)?.username || "Player",
-          1
-        ]).reduce((arr, [name, value]) => {
-          const found = arr.find(x => x[0] === name);
-          if (found) found[1] += value;
-          else arr.push([name, value]);
-          return arr;
-        }, [])
-      ),
-      caught: true,
-      tie: false,
-      spyGuessed: correct,
-      winner: correct ? "SPY" : "DETECTIVES"
+      votes: counts,
+      eliminated: eliminated ? eliminated.username : null,
+      caught,
+      tie,
+      winner: caught ? "INSIDERS" : "SHADOW"
     });
   });
 
   socket.on("playAgain", () => {
     const code = findRoom(socket.id);
     if (!code) return;
+
     const room = rooms[code];
 
-    if (room.host !== socket.id)
+    if (room.host !== socket.id) {
       return socket.emit("errorMessage", "Only host can restart!");
-    if (room.phase !== "finished")
-      return socket.emit("errorMessage", "The game is not finished yet!");
+    }
+    if (room.phase !== "finished") return;
 
     resetRoom(code);
   });
@@ -300,6 +300,6 @@ io.on("connection", socket => {
   });
 });
 
-server.listen(process.env.PORT || 3000, "0.0.0.0", () =>
-  console.log("SHADOW server running on port " + (process.env.PORT || 3000))
-);
+server.listen(process.env.PORT || 3000, "0.0.0.0", () => {
+  console.log("SHADOW server running on port " + (process.env.PORT || 3000));
+});
