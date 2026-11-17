@@ -2,149 +2,198 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#090912">
 <title>SHADOW - Find The Spy</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#29204b,#090912 65%);font-family:Arial,sans-serif;color:white;text-align:center}
-header{padding:28px 12px 12px}
-.logo{font-size:42px;font-weight:900;letter-spacing:8px;color:#bd9aff;text-shadow:0 0 25px #8855ff}
-.tagline{font-size:11px;letter-spacing:3px;color:#aaa}
-.panel{width:92%;max-width:480px;margin:20px auto;padding:22px;background:#171528;border:1px solid #51416f;border-radius:18px;box-shadow:0 10px 35px #0008}
-input{width:100%;padding:14px;margin:7px 0;background:#0d0c18;border:1px solid #554775;border-radius:11px;color:white;font-size:16px}
-button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:11px;background:linear-gradient(110deg,#8054dc,#b36bea);color:white;font-size:15px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.4}
-.secondary{background:#302944;border:1px solid #65528b}
-.small{font-size:12px;color:#aaa}
-.section{display:none;margin-top:20px;padding:16px;background:#100f1e;border:1px solid #403455;border-radius:14px}
-h2,h3{color:#c8aaff}
-.code{font-size:30px;letter-spacing:6px;color:#c5a0ff;font-weight:bold}
-.player,.clue{padding:12px;margin:8px 0;background:#28233b;border-radius:10px;text-align:left}
-.secret{padding:20px;background:#302344;border:1px solid #a47be8;border-radius:14px;margin:15px 0}
-.word{font-size:32px;font-weight:bold;letter-spacing:5px;color:#e3c9ff}
-#message{color:#e1c5ff;margin:12px}
-#resultArea{margin-top:15px}
-.winner{font-size:25px;font-weight:bold;color:#a8ffbd}
-footer{padding:25px;color:#777;font-size:11px}
+:root{--bg:#090912;--panel:#151323;--purple:#a477ff;--muted:#aaa4bd;--line:#39304f}
+body{margin:0;background:radial-gradient(ellipse at 50% 0%,#292044 0%,#11101d 42%,#080810 100%);font-family:Arial,sans-serif;color:#fff;min-height:100vh}
+button,input{font:inherit}
+button{border:0;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.app{min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:18px 15px 24px}
+.top{width:100%;max-width:520px;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.brand{font-size:24px;font-weight:900;letter-spacing:5px;color:#d2baff;text-shadow:0 0 18px #8955ff}
+.status{font-size:10px;color:#9d91b6;letter-spacing:2px}
+.screen{display:none;width:100%;max-width:520px;min-height:calc(100svh - 100px);animation:appear .25s ease}
+.screen.active{display:flex;flex-direction:column;justify-content:center}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.panel{width:100%;padding:25px 20px;background:linear-gradient(145deg,#1b182c,#11101c);border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 50px #0007}
+.hero{text-align:center;padding:35px 20px}
+.hero-logo{font-size:clamp(48px,14vw,72px);font-weight:1000;letter-spacing:9px;color:#c8a6ff;text-shadow:0 0 35px #8653ff;margin:10px 0}
+.tagline{font-size:10px;letter-spacing:3px;color:#aaa2ba}
+h1{font-size:25px;margin:10px 0;color:#e5d7ff}
+h2{font-size:21px;color:#d4baff;margin:5px 0 16px}
+h3{font-size:15px;color:#d4baff}
+p{line-height:1.5}
+.small{font-size:12px;color:var(--muted)}
+input{width:100%;padding:15px;margin:8px 0;background:#0b0a14;border:1px solid #49405f;border-radius:12px;color:#fff;outline:none}
+input:focus{border-color:#a477ff}
+.btn{width:100%;padding:15px;margin:7px 0;border-radius:12px;background:linear-gradient(110deg,#8054dc,#b36bea);color:white;font-weight:800;letter-spacing:1px;box-shadow:0 7px 20px #8054dc33}
+.btn.secondary{background:#29243a;border:1px solid #574a73;box-shadow:none}
+.btn.ghost{background:transparent;border:1px solid #514568;box-shadow:none}
+.back{align-self:flex-start;background:transparent;color:#c5b0eb;padding:10px 0;margin-bottom:12px}
+.divider{height:1px;background:#332c45;margin:18px 0}
+.room-code{font-size:36px;font-weight:900;letter-spacing:8px;color:#d1b2ff;margin:14px 0}
+.player{display:flex;align-items:center;gap:12px;padding:13px;margin:8px 0;background:#252137;border:1px solid #39304f;border-radius:12px;text-align:left}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#49336d;color:#e4d2ff;font-weight:bold}
+.player-name{flex:1;font-weight:bold}
+.player-tag{font-size:10px;color:#bca3eb}
+.role-card{padding:28px 18px;text-align:center;border:1px solid #8e69c7;border-radius:18px;background:radial-gradient(circle at top,#45305f,#1b1729 75%)}
+.role-name{font-size:32px;font-weight:900;letter-spacing:4px}
+.word{font-size:34px;font-weight:900;letter-spacing:4px;color:#e5cfff;margin:18px 0}
+.game-info{padding:12px;background:#211c30;border-radius:12px;color:#c7b5e7;font-size:13px;margin:12px 0}
+.clue{padding:12px;margin:8px 0;background:#252137;border-radius:10px;text-align:left;font-size:14px}
+.clue strong{color:#d2baff}
+.vote{background:#29243a;border:1px solid #574a73}
+.winner{font-size:27px;font-weight:900;color:#a8ffbd;margin:15px 0}
+#message{width:100%;max-width:520px;text-align:center;color:#e0caff;font-size:13px;min-height:22px;margin-top:12px}
+footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
+@media(max-height:650px){.screen{min-height:calc(100svh - 75px)}.hero{padding:15px}.hero-logo{font-size:48px}.panel{padding:18px}}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">SHADOW</div>
-<div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
-</header>
+<div class="app">
+ <div class="top">
+  <div class="brand">SHADOW</div>
+  <div class="status">FIND THE SPY · TRUST NOBODY</div>
+ </div>
 
-<div class="panel">
-<div id="lobby">
-<h2>Welcome to SHADOW</h2>
-<p class="small">3 INSIDERS. 1 SHADOW. TRUST NOBODY.</p>
-<input id="username" maxlength="18" placeholder="Enter your username">
-<button onclick="createRoom()">CREATE ROOM</button>
-<input id="roomCode" maxlength="8" placeholder="Enter room code">
-<button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
+ <section id="homeScreen" class="screen active">
+  <div class="panel hero">
+   <div class="hero-logo">SHADOW</div>
+   <div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
+   <div style="font-size:42px;margin:30px 0 12px">◈</div>
+   <h1>Enter the mystery world</h1>
+   <p class="small">3 INSIDERS. 1 SHADOW. TRUST NOBODY.</p>
+   <input id="username" maxlength="18" placeholder="Choose your player name">
+   <button class="btn" onclick="createRoom()">CREATE ROOM</button>
+   <button class="btn secondary" onclick="showScreen('joinScreen')">JOIN ROOM</button>
+  </div>
+ </section>
+
+ <section id="joinScreen" class="screen">
+  <div class="panel">
+   <button class="back" onclick="showScreen('homeScreen')">← BACK</button>
+   <h2>JOIN A ROOM</h2>
+   <p class="small">Enter your friend's room code to join the game.</p>
+   <input id="joinUsername" maxlength="18" placeholder="Your player name">
+   <input id="roomCode" maxlength="8" placeholder="ENTER ROOM CODE" style="text-transform:uppercase;letter-spacing:4px">
+   <button class="btn" onclick="joinRoom()">JOIN GAME</button>
+  </div>
+ </section>
+
+ <section id="lobbyScreen" class="screen">
+  <div class="panel">
+   <p class="small">WAITING ROOM</p>
+   <h2>YOUR LOBBY</h2>
+   <p class="small">ROOM CODE</p>
+   <div id="displayCode" class="room-code">------</div>
+   <button class="btn secondary" onclick="copyCode()">COPY ROOM CODE</button>
+   <div class="divider"></div>
+   <h3>PLAYERS <span id="count">0</span>/4</h3>
+   <div id="players"></div>
+   <p class="small">Exactly 4 players are required to start.</p>
+   <button id="startButton" class="btn" onclick="startGame()">START GAME</button>
+   <button class="btn ghost" onclick="showScreen('homeScreen')">LEAVE LOBBY</button>
+  </div>
+ </section>
+
+ <section id="roleScreen" class="screen">
+  <div class="panel">
+   <p class="small">YOUR SECRET IDENTITY</p>
+   <h2>ROLE REVEAL</h2>
+   <div class="role-card">
+    <div id="role" class="role-name">LOADING</div>
+    <p id="category" class="small"></p>
+    <div id="secretWord" class="word"></div>
+    <p id="secretHint" class="small">Keep your secret safe!</p>
+   </div>
+   <p class="small">Do not show your screen to other players.</p>
+   <button class="btn" onclick="showScreen('clueScreen')">CONTINUE TO CLUES</button>
+  </div>
+ </section>
+
+ <section id="clueScreen" class="screen">
+  <div class="panel">
+   <p class="small">ROUND 01</p>
+   <h2>CLUE ROUND</h2>
+   <div id="clueTurnInfo" class="game-info">Waiting for clue turn...</div>
+   <input id="clueInput" maxlength="100" placeholder="Write your clue..." disabled>
+   <button id="clueButton" class="btn" onclick="sendClue()" disabled>SUBMIT CLUE</button>
+   <div class="divider"></div>
+   <h3>CLUES SO FAR</h3>
+   <div id="clues"></div>
+  </div>
+ </section>
+
+ <section id="discussionScreen" class="screen">
+  <div class="panel">
+   <p class="small">ROUND 02</p>
+   <h2>DISCUSSION</h2>
+   <p class="small">Discuss the clues. Find the Shadow.</p>
+   <div id="discussionClues"></div>
+   <div class="game-info">Voice chat is planned for the next development stage.</div>
+   <button id="votingButton" class="btn" onclick="startVoting" style="display:none">START VOTING</button>
+  </div>
+ </section>
+
+ <section id="votingScreen" class="screen">
+  <div class="panel">
+   <p class="small">FINAL DECISION</p>
+   <h2>SECRET VOTING</h2>
+   <p class="small">Who do you think is the Shadow? You cannot vote for yourself.</p>
+   <div id="votePlayers"></div>
+   <p id="voteStatus" class="game-info">Choose one player.</p>
+  </div>
+ </section>
+
+ <section id="resultScreen" class="screen">
+  <div class="panel">
+   <p class="small">THE MYSTERY IS OVER</p>
+   <h2>GAME RESULTS</h2>
+   <div id="resultArea"></div>
+   <button id="playAgainButton" class="btn" onclick="playAgain()" style="display:none">PLAY AGAIN</button>
+   <button class="btn secondary" onclick="showScreen('homeScreen')">BACK TO HOME</button>
+  </div>
+ </section>
+
+ <div id="message"></div>
+ <footer>SHADOW © 2026 · THE MYSTERY BEGINS</footer>
 </div>
-
-<div id="room" class="section">
-<p class="small">YOUR ROOM CODE</p>
-<div id="displayCode" class="code"></div>
-<button class="secondary" onclick="copyCode()">COPY ROOM CODE</button>
-<h3>Players <span id="count">0</span>/4</h3>
-<div id="players"></div>
-<p class="small">Exactly 4 players required</p>
-<button id="startButton" onclick="startGame()">START GAME</button>
-</div>
-
-<div id="game" class="section">
-<h2 id="phaseTitle">GAME STARTED</h2>
-
-<div id="secretCard" class="secret" style="display:none">
-<div id="role"></div>
-<p class="small" id="category"></p>
-<div id="secretWord" class="word"></div>
-<p class="small" id="secretHint">Keep your secret safe!</p>
-</div>
-
-<p id="gameInfo" class="small"></p>
-
-<div id="clueArea" style="display:none">
-<h3>Clue Round</h3>
-<p id="clueTurnInfo" class="small">Waiting for clue turn...</p>
-<input id="clueInput" maxlength="100" placeholder="Write your clue..." disabled>
-<button id="clueButton" onclick="sendClue()" disabled>SUBMIT CLUE</button>
-<div id="clues"></div>
-</div>
-
-<div id="discussionArea" style="display:none">
-<h3>Discussion Time</h3>
-<p class="small">Discuss the clues and find the Shadow!</p>
-<div id="discussionClues"></div>
-<button id="votingButton" onclick="startVoting()" style="display:none">START VOTING</button>
-</div>
-
-<div id="votingArea" style="display:none">
-<h3>Secret Voting</h3>
-<p class="small">Choose who you think is the Shadow. You cannot vote for yourself.</p>
-<div id="votePlayers"></div>
-<p id="voteStatus" class="small"></p>
-</div>
-
-<div id="resultArea"></div>
-<button id="playAgainButton" onclick="playAgain()" style="display:none">PLAY AGAIN</button>
-</div>
-
-<div id="message"></div>
-</div>
-
-<footer>SHADOW © 2026 | THE MYSTERY BEGINS</footer>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket=io();
-let roomHost=false;
-let myUsername="";
-let roomCode="";
-let myVoteSubmitted=false;
-let myClueTurn=false;
-
+let roomHost=false,myUsername="",roomCode="",myVoteSubmitted=false,myClueTurn=false;
 const el=id=>document.getElementById(id);
-function message(t){el("message").innerText=t}
+const screens=["homeScreen","joinScreen","lobbyScreen","roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
 
-function showPlayers(players){
- el("count").innerText=players.length;
- el("players").innerHTML="";
- players.forEach(p=>{
-  const d=document.createElement("div");
-  d.className="player";
-  d.innerText=p.username+(p.id===socket.id?" (YOU)":"");
-  el("players").appendChild(d);
- });
- el("startButton").style.display=roomHost?"block":"none";
- el("startButton").disabled=players.length!==4;
+function showScreen(id){
+ screens.forEach(s=>el(s).classList.toggle("active",s===id));
+ window.scrollTo(0,0);
 }
+function message(t){el("message").innerText=t}
 
 function createRoom(){
  myUsername=el("username").value.trim();
- if(!myUsername)return message("Enter your username!");
+ if(!myUsername)return message("Enter your username first!");
  socket.emit("createRoom",myUsername);
 }
-
 function joinRoom(){
- myUsername=el("username").value.trim();
+ myUsername=el("joinUsername").value.trim();
  roomCode=el("roomCode").value.trim().toUpperCase();
- if(!myUsername||!roomCode)return message("Enter username and room code!");
+ if(!myUsername||!roomCode)return message("Enter your name and room code!");
+ el("username").value=myUsername;
  socket.emit("joinRoom",{username:myUsername,roomCode});
 }
-
 function copyCode(){
  if(navigator.clipboard){
-  navigator.clipboard.writeText(roomCode)
-  .then(()=>message("Room code copied!"))
-  .catch(()=>message("Room code: "+roomCode));
+  navigator.clipboard.writeText(roomCode).then(()=>message("Room code copied!")).catch(()=>message("Room code: "+roomCode));
  }else message("Room code: "+roomCode);
 }
-
 function startGame(){socket.emit("startGame")}
-
 function sendClue(){
  const clue=el("clueInput").value.trim();
  if(!clue)return message("Write your clue first!");
@@ -153,19 +202,33 @@ function sendClue(){
  myClueTurn=false;
  el("clueInput").disabled=true;
  el("clueButton").disabled=true;
+ el("clueInput").value="";
  message("Clue submitted. Waiting for next player...");
 }
-
 function startVoting(){socket.emit("startVoting")}
 function playAgain(){socket.emit("playAgain")}
 
+function showPlayers(players){
+ el("count").innerText=players.length;
+ el("players").innerHTML="";
+ players.forEach(p=>{
+  const d=document.createElement("div");
+  d.className="player";
+  const a=document.createElement("div");a.className="avatar";a.innerText=p.username.charAt(0).toUpperCase();
+  const n=document.createElement("div");n.className="player-name";n.innerText=p.username+(p.id===socket.id?" (YOU)":"");
+  const tag=document.createElement("div");tag.className="player-tag";tag.innerText=p.id===socket.id&&roomHost?"HOST":"PLAYER";
+  d.append(a,n,tag);el("players").appendChild(d);
+ });
+ el("startButton").style.display=roomHost?"block":"none";
+ el("startButton").disabled=players.length!==4;
+}
 function showClues(list,target){
  target.innerHTML="";
  (list||[]).forEach(item=>{
-  const d=document.createElement("div");
-  d.className="clue";
-  d.innerText=item.username+": "+item.clue;
-  target.appendChild(d);
+  const d=document.createElement("div");d.className="clue";
+  const name=document.createElement("strong");name.innerText=item.username+": ";
+  const clue=document.createElement("span");clue.innerText=item.clue;
+  d.append(name,clue);target.appendChild(d);
  });
 }
 
@@ -173,27 +236,18 @@ socket.on("connect",()=>console.log("Connected to SHADOW"));
 socket.on("errorMessage",message);
 
 socket.on("roomCreated",data=>{
- roomCode=data.roomCode;
- roomHost=true;
- el("lobby").style.display="none";
- el("room").style.display="block";
+ roomCode=data.roomCode;roomHost=true;
  el("displayCode").innerText=roomCode;
- showPlayers(data.players);
+ showPlayers(data.players);showScreen("lobbyScreen");
  message("Room created! Invite exactly 3 friends.");
 });
-
 socket.on("roomJoined",data=>{
- roomCode=data.roomCode;
- roomHost=data.host===socket.id;
- el("lobby").style.display="none";
- el("room").style.display="block";
+ roomCode=data.roomCode;roomHost=data.host===socket.id;
  el("displayCode").innerText=roomCode;
- showPlayers(data.players);
+ showPlayers(data.players);showScreen("lobbyScreen");
  message("Joined room successfully!");
 });
-
 socket.on("playerUpdate",showPlayers);
-
 socket.on("hostChanged",data=>{
  roomHost=data.host===socket.id;
  el("startButton").style.display=roomHost?"block":"none";
@@ -201,26 +255,20 @@ socket.on("hostChanged",data=>{
 });
 
 socket.on("gameStarted",()=>{
- el("room").style.display="none";
- el("game").style.display="block";
- el("phaseTitle").innerText="SECRET ROLE ROUND";
- el("gameInfo").innerText="Your secret role is loading...";
- el("secretCard").style.display="none";
- el("clueArea").style.display="block";
- el("discussionArea").style.display="none";
- el("votingArea").style.display="none";
- el("resultArea").innerHTML="";
- el("playAgainButton").style.display="none";
+ showScreen("roleScreen");
+ el("role").innerText="REVEALING...";
+ el("secretWord").innerText="";
+ el("clues").innerHTML="";
+ el("discussionClues").innerHTML="";
  el("clueInput").value="";
  el("clueInput").disabled=true;
  el("clueButton").disabled=true;
- el("clueTurnInfo").innerText="Waiting for your clue turn...";
- myClueTurn=false;
- myVoteSubmitted=false;
+ el("playAgainButton").style.display="none";
+ myClueTurn=false;myVoteSubmitted=false;
+ message("Your secret role is loading...");
 });
 
 socket.on("yourRole",data=>{
- el("secretCard").style.display="block";
  el("role").innerText=data.role;
  el("role").style.color=data.role==="SHADOW"?"#ff7777":"#a8ffbd";
  el("category").innerText=data.category?"CATEGORY: "+data.category:"";
@@ -234,39 +282,28 @@ socket.on("clueTurn",data=>{
  el("clueTurnInfo").innerText="Clue "+data.index+" of "+data.total+" — "+data.username+"'s turn";
  el("clueInput").disabled=!mine;
  el("clueButton").disabled=!mine;
- if(mine){
-  message("Your turn! Give one short clue.");
-  el("clueInput").focus();
- }else{
-  message("Waiting for "+data.username+" to give a clue.");
- }
+ if(mine)message("Your turn! Give one short clue.");
+ else message("Waiting for "+data.username+" to give a clue.");
 });
 
 socket.on("cluesUpdate",list=>{
  showClues(list,el("clues"));
  showClues(list,el("discussionClues"));
 });
-
 socket.on("cluesComplete",()=>{
- myClueTurn=false;
- el("phaseTitle").innerText="DISCUSSION ROUND";
- el("clueArea").style.display="none";
- el("discussionArea").style.display="block";
+ myClueTurn=false;showScreen("discussionScreen");
  el("votingButton").style.display=roomHost?"block":"none";
  message("All clues submitted! Discuss and find the Shadow.");
 });
 
 socket.on("votingStarted",players=>{
- el("phaseTitle").innerText="VOTING ROUND";
- el("discussionArea").style.display="none";
- el("votingArea").style.display="block";
+ showScreen("votingScreen");
  el("votePlayers").innerHTML="";
  el("voteStatus").innerText="Choose one player.";
  myVoteSubmitted=false;
-
  players.forEach(name=>{
   const b=document.createElement("button");
-  b.className="vote secondary";
+  b.className="btn vote";
   b.innerText="VOTE: "+name+(name===myUsername?" (YOU)":"");
   b.disabled=name===myUsername;
   b.onclick=()=>{
@@ -279,53 +316,41 @@ socket.on("votingStarted",players=>{
   el("votePlayers").appendChild(b);
  });
 });
-
-socket.on("voteReceived",()=>{
- el("voteStatus").innerText="Your secret vote has been received!";
-});
+socket.on("voteReceived",()=>{el("voteStatus").innerText="Your secret vote has been received!"});
 
 socket.on("gameResult",data=>{
- el("phaseTitle").innerText="GAME OVER";
- el("clueArea").style.display="none";
- el("discussionArea").style.display="none";
- el("votingArea").style.display="none";
- el("secretCard").style.display="block";
-
+ showScreen("resultScreen");
  const won=data.winner==="INSIDERS";
- let html='<div class="winner">'+(won?"INSIDERS WIN!":"SHADOW WINS!")+'</div>';
- html+="<p>Shadow: <b>"+data.spy+"</b></p>";
- html+="<p>Secret Word: <b>"+data.word+"</b></p>";
-
- if(data.tie){
-  html+="<p>Voting ended in a tie. No one was eliminated.</p>";
- }else{
-  html+="<p>Eliminated: <b>"+data.eliminated+"</b></p>";
-  html+="<p>"+(data.caught?"The Shadow was caught!":"An Insider was eliminated. The Shadow escaped!")+"</p>";
+ const area=el("resultArea");area.innerHTML="";
+ const winner=document.createElement("div");winner.className="winner";winner.innerText=won?"INSIDERS WIN!":"SHADOW WINS!";
+ area.appendChild(winner);
+ function resultLine(label,value){
+  const p=document.createElement("p");p.innerText=label+": "+value;area.appendChild(p);
  }
-
- html+="<h3>Vote Results</h3>";
- Object.entries(data.votes||{}).forEach(([name,count])=>{
-  html+="<p>"+name+": "+count+" vote(s)</p>";
- });
-
- el("resultArea").innerHTML=html;
+ resultLine("Shadow",data.spy);
+ resultLine("Secret Word",data.word);
+ if(data.tie)resultLine("Result","Voting ended in a tie. No one was eliminated.");
+ else{
+  resultLine("Eliminated",data.eliminated);
+  resultLine("Outcome",data.caught?"The Shadow was caught!":"An Insider was eliminated. The Shadow escaped!");
+ }
+ const h=document.createElement("h3");h.innerText="VOTE RESULTS";area.appendChild(h);
+ Object.entries(data.votes||{}).forEach(([name,count])=>resultLine(name,count+" vote(s)"));
  el("playAgainButton").style.display=roomHost?"block":"none";
  message("The mystery has been solved!");
 });
 
 socket.on("gameReset",data=>{
  roomHost=data.host===socket.id;
- el("game").style.display="none";
- el("room").style.display="block";
- el("secretCard").style.display="none";
- el("clueArea").style.display="none";
- el("discussionArea").style.display="none";
- el("votingArea").style.display="none";
- el("resultArea").innerHTML="";
+ showPlayers(data.players);showScreen("lobbyScreen");
+ el("role").innerText="";el("secretWord").innerText="";
+ el("clues").innerHTML="";el("discussionClues").innerHTML="";
  el("playAgainButton").style.display="none";
- showPlayers(data.players);
  message("New round ready! Waiting for host.");
 });
+</script>
+<script>
+el("votingButton").onclick=()=>startVoting();
 </script>
 </body>
 </html>
