@@ -74,6 +74,8 @@ io.to(code).emit("questionUpdate",room.questions);
     if(!code) return;
     const room=rooms[code];
     if(room.host!==socket.id || room.phase!=="questions") return;
+    const allAsked=room.players.every(p=>room.questions.some(q=>q.username===p.username));
+    if(!allAsked) return socket.emit("errorMessage","All players must ask at least one question first!");
     room.phase="voting";
     io.to(code).emit("votingStarted",room.players.map(p=>p.username));
   });

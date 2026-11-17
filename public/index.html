@@ -72,6 +72,7 @@ h3{color:#c8b8ff}
 <script>
 const socket=io();
 let roomHost=false;
+let gamePlayers=[];
 
 function showRoom(code){
  document.getElementById("room").style.display="block";
@@ -114,12 +115,14 @@ socket.on("yourRole",data=>{
  document.getElementById("role").innerText="YOUR ROLE: "+data.role;
 });
 socket.on("gameStarted",data=>{
+ gamePlayers=data.players;
  document.getElementById("room").style.display="none";
  document.getElementById("game").style.display="block";
  document.getElementById("phaseTitle").innerText="QUESTION ROUND";
  document.getElementById("gameInfo").innerText="Ask questions and find the Spy!";
  document.getElementById("questionArea").style.display="block";
  document.getElementById("votingButton").style.display=roomHost?"block":"none";
+ document.getElementById("votingButton").disabled=true;
 });
 function sendQuestion(){
  const input=document.getElementById("questionInput");
@@ -129,6 +132,8 @@ function sendQuestion(){
 }
 socket.on("questionUpdate",list=>{
  document.getElementById("questions").innerHTML=list.map(q=>'<div class="question"><b>'+safe(q.username)+':</b> '+safe(q.question)+'</div>').join("");
+ const allAsked=gamePlayers.length>0 && gamePlayers.every(name=>list.some(q=>q.username===name));
+ if(roomHost) document.getElementById("votingButton").disabled=!allAsked;
 });
 function startVoting(){socket.emit("startVoting")}
 socket.on("votingStarted",players=>{
