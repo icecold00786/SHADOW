@@ -51,6 +51,31 @@ input:focus{border-color:#a477ff}
 #message{width:100%;max-width:520px;text-align:center;color:#e0caff;font-size:13px;min-height:22px;margin-top:12px}
 footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
 @media(max-height:650px){.screen{min-height:calc(100svh - 75px)}.hero{padding:15px}.hero-logo{font-size:48px}.panel{padding:18px}}
+
+/* SHADOW PROFILE EXPERIENCE */
+.intro-screen{text-align:center;position:relative;overflow:hidden}
+.intro-orb{font-size:76px;color:#c9a5ff;text-shadow:0 0 35px #995cff;animation:orbPulse 2s infinite alternate}
+@keyframes orbPulse{from{transform:scale(.9);filter:brightness(.8)}to{transform:scale(1.12);filter:brightness(1.5)}}
+.intro-title{font-size:clamp(48px,14vw,72px);font-weight:1000;letter-spacing:9px;color:#d5baff;text-shadow:0 0 35px #955aff}
+.avatar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.avatar-choice{padding:15px 5px;border-radius:15px;background:#211c30;border:2px solid #39304f;color:white;font-size:34px}
+.avatar-choice.selected{border-color:#bd8cff;background:#382752;box-shadow:0 0 18px #995cff55}
+.avatar-label{display:block;font-size:10px;color:#c7b5e7;margin-top:6px}
+.profile-hero{text-align:center;padding:20px 10px}
+.big-avatar{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:linear-gradient(145deg,#65429a,#251a3c);border:3px solid #c49aff;font-size:52px;box-shadow:0 0 25px #995cff55}
+.uid-box{padding:12px;background:#0c0a15;border:1px dashed #8d6ac0;border-radius:12px;color:#d9c1ff;letter-spacing:2px;font-weight:bold;text-align:center;margin:12px 0}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}
+.stat{padding:12px 5px;text-align:center;background:#211c30;border-radius:12px}
+.stat strong{display:block;color:#d9bdff;font-size:19px}
+.stat span{font-size:10px;color:#aaa4bd}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:15px 0}
+.menu-tile{padding:18px 8px;border-radius:15px;background:#211c30;border:1px solid #39304f;color:white;font-weight:bold}
+.menu-tile span{display:block;font-size:27px;margin-bottom:7px}
+.lobby-start{font-size:19px;padding:19px}
+.rank-pill{display:inline-block;padding:6px 14px;border-radius:20px;background:#34264c;color:#d9bdff;font-size:11px;letter-spacing:2px}
+.feature-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #332c45}
+.feature-row span{color:#c7b5e7}
+
 </style>
 </head>
 <body>
@@ -60,18 +85,149 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   <div class="status">FIND THE SPY · TRUST NOBODY</div>
  </div>
 
- <section id="homeScreen" class="screen active">
-  <div class="panel hero">
-   <div class="hero-logo">SHADOW</div>
-   <div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
-   <div style="font-size:42px;margin:30px 0 12px">◈</div>
-   <h1>Enter the mystery world</h1>
-   <p class="small">3 INSIDERS. 1 SHADOW. TRUST NOBODY.</p>
-   <input id="username" maxlength="18" placeholder="Choose your player name">
-   <button class="btn" onclick="createRoom()">CREATE ROOM</button>
-   <button class="btn secondary" onclick="showScreen('joinScreen')">JOIN ROOM</button>
+ 
+<section id="introScreen" class="screen active">
+ <div class="panel hero intro-screen">
+  <div class="intro-orb">◈</div>
+  <div class="intro-title">SHADOW</div>
+  <div class="tagline">FIND THE SPY. TRUST NOBODY.</div>
+  <p class="small" style="margin-top:35px">A WORLD OF SECRETS IS WAITING</p>
+  <button class="btn" onclick="enterShadow()">ENTER THE WORLD</button>
+  <p class="small">SHADOW © 2026</p>
+ </div>
+</section>
+
+<section id="welcomeScreen" class="screen">
+ <div class="panel hero">
+  <div class="hero-logo">SHADOW</div>
+  <h1>WELCOME, PLAYER</h1>
+  <p class="small">Create your identity and enter the mystery world.</p>
+  <button class="btn" onclick="showScreen('profileSetupScreen')">CREATE YOUR PROFILE</button>
+  <button class="btn secondary" onclick="showScreen('profileSetupScreen')">CONTINUE AS GUEST</button>
+  <p class="small">Online Google login will be added in a later update.</p>
+ </div>
+</section>
+
+<section id="profileSetupScreen" class="screen">
+ <div class="panel">
+  <p class="small">YOUR IDENTITY STARTS HERE</p>
+  <h2>CREATE YOUR PROFILE</h2>
+  <input id="profileName" maxlength="18" placeholder="Choose your player name">
+  <h3>CHOOSE YOUR ANIME AVATAR</h3>
+  <div class="avatar-grid">
+   <button class="avatar-choice selected" data-avatar="🥷" onclick="chooseAvatar(this)">🥷<span class="avatar-label">NINJA</span></button>
+   <button class="avatar-choice" data-avatar="🦊" onclick="chooseAvatar(this)">🦊<span class="avatar-label">FOX</span></button>
+   <button class="avatar-choice" data-avatar="🐺" onclick="chooseAvatar(this)">🐺<span class="avatar-label">WOLF</span></button>
+   <button class="avatar-choice" data-avatar="🦁" onclick="chooseAvatar(this)">🦁<span class="avatar-label">LION</span></button>
+   <button class="avatar-choice" data-avatar="🐉" onclick="chooseAvatar(this)">🐉<span class="avatar-label">DRAGON</span></button>
+   <button class="avatar-choice" data-avatar="🦅" onclick="chooseAvatar(this)">🦅<span class="avatar-label">EAGLE</span></button>
   </div>
- </section>
+  <button class="btn" onclick="createShadowProfile()">CREATE PROFILE</button>
+  <button class="btn ghost" onclick="showScreen('welcomeScreen')">BACK</button>
+ </div>
+</section>
+
+<section id="mainLobbyScreen" class="screen">
+ <div class="panel">
+  <div class="profile-hero">
+   <div id="lobbyAvatar" class="big-avatar">🥷</div>
+   <h2 id="lobbyName">PLAYER</h2>
+   <div class="rank-pill">★ ROOKIE</div>
+   <div id="lobbyUID" class="uid-box">SHD-000000</div>
+   <button class="btn secondary" onclick="copyPlayerUID()">COPY PLAYER UID</button>
+  </div>
+  <div class="divider"></div>
+  <p class="small">YOUR MYSTERY JOURNEY BEGINS</p>
+  <button class="btn lobby-start" onclick="showScreen('homeScreen')">▶ START PLAYING</button>
+  <div class="menu-grid">
+   <button class="menu-tile" onclick="openProfile()"><span>👤</span>PROFILE</button>
+   <button class="menu-tile" onclick="showScreen('friendsScreen')"><span>👥</span>FRIENDS</button>
+   <button class="menu-tile" onclick="showScreen('inventoryScreen')"><span>🎒</span>INVENTORY</button>
+   <button class="menu-tile" onclick="showScreen('settingsScreen')"><span>⚙️</span>SETTINGS</button>
+  </div>
+  <p class="small" style="text-align:center">SHADOW · FIND THE SPY. TRUST NOBODY.</p>
+ </div>
+</section>
+
+<section id="profileScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
+  <div class="profile-hero">
+   <div id="profileAvatar" class="big-avatar">🥷</div>
+   <h2 id="profileDisplayName">PLAYER</h2>
+   <div class="rank-pill">★ ROOKIE</div>
+   <div id="profileUID" class="uid-box">SHD-000000</div>
+   <button class="btn secondary" onclick="copyPlayerUID()">COPY UID</button>
+  </div>
+  <div class="stat-grid">
+   <div class="stat"><strong>0</strong><span>GAMES</span></div>
+   <div class="stat"><strong>0</strong><span>WINS</span></div>
+   <div class="stat"><strong>1</strong><span>LEVEL</span></div>
+  </div>
+  <h3>PLAYER DETAILS</h3>
+  <div class="feature-row"><span>Rank</span><strong>Rookie</strong></div>
+  <div class="feature-row"><span>Experience</span><strong>0 XP</strong></div>
+  <div class="feature-row"><span>Banner</span><strong>Default</strong></div>
+ </div>
+</section>
+
+<section id="friendsScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
+  <h2>YOUR FRIENDS</h2>
+  <p class="small">Search for a player using their unique SHADOW UID.</p>
+  <input id="friendUID" placeholder="Enter player UID">
+  <button class="btn" onclick="searchShadowFriend()">SEARCH PLAYER</button>
+  <div class="divider"></div>
+  <h3>FRIEND REQUESTS</h3>
+  <p class="small">No friend requests yet.</p>
+  <p class="small">Online UID search and friend requests will activate with the account server.</p>
+ </div>
+</section>
+
+<section id="inventoryScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
+  <h2>YOUR INVENTORY</h2>
+  <p class="small">Cosmetic items and gifts. No gameplay advantage.</p>
+  <div class="menu-grid">
+   <div class="menu-tile"><span>🌹</span>ROSE <small>× 1</small></div>
+   <div class="menu-tile"><span>❤️</span>HEART <small>× 1</small></div>
+   <div class="menu-tile"><span>👑</span>CROWN <small>× 0</small></div>
+   <div class="menu-tile"><span>🍅</span>TOMATO <small>× 0</small></div>
+  </div>
+  <p class="small">Gift sending and inventory syncing will be connected in a later stage.</p>
+ </div>
+</section>
+
+<section id="settingsScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
+  <h2>SETTINGS</h2>
+  <div class="feature-row"><span>Game</span><strong>SHADOW</strong></div>
+  <div class="feature-row"><span>Account</span><strong>Guest profile</strong></div>
+  <div class="feature-row"><span>Sound</span><strong>Coming soon</strong></div>
+  <div class="feature-row"><span>Voice chat</span><strong>Coming soon</strong></div>
+  <button class="btn secondary" onclick="resetShadowProfile()">RESET LOCAL PROFILE</button>
+ </div>
+</section>
+
+
+<section id="homeScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← MAIN LOBBY</button>
+  <p class="small">CHOOSE YOUR GAME</p>
+  <h2>PLAY SHADOW</h2>
+  <div class="role-card">
+   <div class="role-name">CLASSIC SHADOW</div>
+   <p class="small">3 INSIDERS · 1 SHADOW · 4 PLAYERS</p>
+  </div>
+  <input id="username" maxlength="18" placeholder="Your player name">
+  <button class="btn" onclick="createRoom()">CREATE ROOM</button>
+  <button class="btn secondary" onclick="showScreen('joinScreen')">JOIN ROOM</button>
+  <p class="small">Invite 3 friends and find the Shadow.</p>
+ </div>
+</section>
 
  <section id="joinScreen" class="screen">
   <div class="panel">
@@ -96,7 +252,7 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
    <div id="players"></div>
    <p class="small">Exactly 4 players are required to start.</p>
    <button id="startButton" class="btn" onclick="startGame()">START GAME</button>
-   <button class="btn ghost" onclick="showScreen('homeScreen')">LEAVE LOBBY</button>
+   <button class="btn ghost" onclick="showScreen('mainLobbyScreen')">LEAVE LOBBY</button>
   </div>
  </section>
 
@@ -155,7 +311,7 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
    <h2>GAME RESULTS</h2>
    <div id="resultArea"></div>
    <button id="playAgainButton" class="btn" onclick="playAgain()" style="display:none">PLAY AGAIN</button>
-   <button class="btn secondary" onclick="showScreen('homeScreen')">BACK TO HOME</button>
+   <button class="btn secondary" onclick="showScreen('mainLobbyScreen')">BACK TO HOME</button>
   </div>
  </section>
 
@@ -168,7 +324,7 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
 const socket=io();
 let roomHost=false,myUsername="",roomCode="",myVoteSubmitted=false,myClueTurn=false;
 const el=id=>document.getElementById(id);
-const screens=["homeScreen","joinScreen","lobbyScreen","roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
+const screens=["introScreen","welcomeScreen","profileSetupScreen","mainLobbyScreen","profileScreen","friendsScreen","inventoryScreen","settingsScreen","homeScreen","joinScreen","lobbyScreen","roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
 
 function showScreen(id){
  screens.forEach(s=>el(s).classList.toggle("active",s===id));
@@ -352,5 +508,89 @@ socket.on("gameReset",data=>{
 <script>
 el("votingButton").onclick=()=>startVoting();
 </script>
+
+<script>
+let selectedShadowAvatar = "🥷";
+let shadowProfile = null;
+
+function enterShadow(){
+ try{
+  shadowProfile=JSON.parse(localStorage.getItem("shadowProfile")||"null");
+ }catch(e){shadowProfile=null}
+ if(shadowProfile){
+  renderShadowProfile();
+  showScreen("mainLobbyScreen");
+ }else{
+  showScreen("welcomeScreen");
+ }
+}
+
+function chooseAvatar(button){
+ document.querySelectorAll(".avatar-choice").forEach(b=>b.classList.remove("selected"));
+ button.classList.add("selected");
+ selectedShadowAvatar=button.dataset.avatar;
+}
+
+function createShadowProfile(){
+ const name=el("profileName").value.trim();
+ if(!name)return message("Please enter your player name!");
+ if(name.length<3)return message("Name must be at least 3 characters!");
+ const uid="SHD-"+Math.random().toString(36).substring(2,8).toUpperCase();
+ shadowProfile={name,avatar:selectedShadowAvatar,uid,rank:"Rookie",level:1};
+ localStorage.setItem("shadowProfile",JSON.stringify(shadowProfile));
+ renderShadowProfile();
+ showScreen("mainLobbyScreen");
+ message("Your SHADOW profile is ready!");
+}
+
+function renderShadowProfile(){
+ if(!shadowProfile)return;
+ el("lobbyAvatar").innerText=shadowProfile.avatar;
+ el("lobbyName").innerText=shadowProfile.name;
+ el("lobbyUID").innerText=shadowProfile.uid;
+ el("profileAvatar").innerText=shadowProfile.avatar;
+ el("profileDisplayName").innerText=shadowProfile.name;
+ el("profileUID").innerText=shadowProfile.uid;
+ el("username").value=shadowProfile.name;
+ el("joinUsername").value=shadowProfile.name;
+}
+
+function openProfile(){
+ renderShadowProfile();
+ showScreen("profileScreen");
+}
+
+function copyPlayerUID(){
+ if(!shadowProfile)return;
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(shadowProfile.uid)
+   .then(()=>message("Player UID copied!"))
+   .catch(()=>message("Your UID: "+shadowProfile.uid));
+ }else{
+  message("Your UID: "+shadowProfile.uid);
+ }
+}
+
+function searchShadowFriend(){
+ const uid=el("friendUID").value.trim().toUpperCase();
+ if(!uid)return message("Enter a player UID first!");
+ message("Online player search will be activated with the account server.");
+}
+
+function resetShadowProfile(){
+ if(!confirm("Reset your local SHADOW profile on this device?"))return;
+ localStorage.removeItem("shadowProfile");
+ shadowProfile=null;
+ showScreen("welcomeScreen");
+ message("Local profile reset.");
+}
+
+window.addEventListener("load",()=>{
+ try{
+  shadowProfile=JSON.parse(localStorage.getItem("shadowProfile")||"null");
+ }catch(e){shadowProfile=null}
+});
+</script>
+
 </body>
 </html>
