@@ -63,16 +63,33 @@ h3{color:#c8b8ff}
 <h3>Who is the Spy?</h3>
 <div id="votePlayers"></div>
 </div>
-<div id="resultArea"></div>
+<div id="resultArea"></div><button id="playAgainButton" style="display:none" onclick="playAgain()">PLAY AGAIN</button>
 </div>
 </div>
 <footer class="small">SHADOW © 2026 | THE MYSTERY BEGINS</footer>
 
-<script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js">function playAgain(){ socket.emit("playAgain"); }
+socket.on("gameReset",data=>{
+ roomHost=data.host===socket.id;
+ gamePlayers=[];
+ document.getElementById("game").style.display="none";
+ document.getElementById("room").style.display="block";
+ document.getElementById("questionArea").style.display="none";
+ document.getElementById("votingArea").style.display="none";
+ document.getElementById("resultArea").innerHTML="";
+ document.getElementById("playAgainButton").style.display="none";
+ document.getElementById("role").innerText="";
+ document.getElementById("gameInfo").innerText="";
+ document.getElementById("startButton").style.display=roomHost?"block":"none";
+ showPlayers(data.players);
+ document.getElementById("message").innerText="New round ready!";
+});
+</script>
 <script>
 const socket=io();
 let roomHost=false;
 let gamePlayers=[];
+let myUsername="";
 
 function showRoom(code){
  document.getElementById("room").style.display="block";
@@ -81,12 +98,14 @@ function showRoom(code){
 function createRoom(){
  const username=document.getElementById("username").value.trim();
  if(!username)return alert("Enter your username!");
+ myUsername=username;
  socket.emit("createRoom",username);
 }
 function joinRoom(){
  const username=document.getElementById("username").value.trim();
  const roomCode=document.getElementById("roomCode").value.trim().toUpperCase();
  if(!username||!roomCode)return alert("Enter username and room code!");
+ myUsername=username;
  socket.emit("joinRoom",{username,roomCode});
  showRoom(roomCode);
 }
@@ -108,7 +127,21 @@ socket.on("roomCreated",data=>{
  document.getElementById("message").innerText="ROOM CREATED!";
  showRoom(data.roomCode);showPlayers(data.players);
 });
-socket.on("playerUpdate",showPlayers);
+socket.on("playerUpdate",players=>{
+ showPlayers(players);
+}); 
+socket.on("roomJoined",data=>{
+ roomHost=false;
+ document.getElementById("message").innerText="JOINED ROOM!";
+ showRoom(data.roomCode);
+ showPlayers(data.players);
+ document.getElementById("startButton").style.display="none";
+});
+socket.on("hostChanged",data=>{
+ roomHost=data.host===socket.id;
+ document.getElementById("startButton").style.display=roomHost?"block":"none";
+ document.getElementById("message").innerText=roomHost?"You are now the Host!":data.username+" is the new Host.";
+});
 socket.on("errorMessage",msg=>document.getElementById("message").innerText=msg);
 
 socket.on("yourRole",data=>{
@@ -119,6 +152,8 @@ socket.on("gameStarted",data=>{
  document.getElementById("room").style.display="none";
  document.getElementById("game").style.display="block";
  document.getElementById("phaseTitle").innerText="QUESTION ROUND";
+ document.getElementById("playAgainButton").style.display="none";
+ document.getElementById("resultArea").innerHTML="";
  document.getElementById("gameInfo").innerText="Ask questions and find the Spy!";
  document.getElementById("questionArea").style.display="block";
  document.getElementById("votingButton").style.display=roomHost?"block":"none";
@@ -159,6 +194,7 @@ socket.on("voteReceived",()=>document.getElementById("gameInfo").innerText="Vote
 socket.on("gameResult",data=>{
  document.getElementById("phaseTitle").innerText="GAME OVER";
  document.getElementById("votingArea").style.display="none";
+ document.getElementById("playAgainButton").style.display=roomHost?"block":"none";
  document.getElementById("resultArea").innerHTML="<h2>THE SPY WAS: "+safe(data.spy)+"</h2><h3>"+(data.caught?"DETECTIVES WIN!":"SPY WINS!")+"</h3><h3>VOTE RESULTS</h3>"+Object.entries(data.votes).map(([n,v])=>'<div class="player">'+safe(n)+": "+v+" votes</div>").join("");
 });
 </script>
