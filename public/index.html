@@ -141,7 +141,14 @@ socket.on("votingStarted",players=>{
  document.getElementById("gameInfo").innerText="Choose who you think is the Spy. You can vote only once.";
  document.getElementById("questionArea").style.display="none";
  document.getElementById("votingArea").style.display="block";
- document.getElementById("votePlayers").innerHTML=players.map(name=>'<button onclick="voteFor('+JSON.stringify(name).replace(/</g,"\\u003c")+')">'+safe(name)+'</button>').join("");
+ const voteBox=document.getElementById("votePlayers");
+ voteBox.innerHTML="";
+ players.forEach(name=>{
+  const button=document.createElement("button");
+  button.textContent=name;
+  button.addEventListener("click",()=>voteFor(name));
+  voteBox.appendChild(button);
+ });
 });
 function voteFor(name){
  socket.emit("submitVote",name);
