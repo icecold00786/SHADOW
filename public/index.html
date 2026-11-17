@@ -180,17 +180,18 @@ socket.on("votingStarted",players=>{
  voteBox.innerHTML="";
  players.forEach(name=>{
   const button=document.createElement("button");
-  button.textContent=name;
+  button.textContent=name===myUsername?name+" (YOU)":name;
+  button.disabled=name===myUsername;
   button.addEventListener("click",()=>voteFor(name));
   voteBox.appendChild(button);
  });
 });
 function voteFor(name){
  socket.emit("submitVote",name);
- document.getElementById("gameInfo").innerText="Your vote has been submitted. Waiting for others...";
- document.getElementById("votePlayers").innerHTML="";
+ document.getElementById("gameInfo").innerText="Submitting vote...";
+ document.querySelectorAll("#votePlayers button").forEach(b=>b.disabled=true);
 }
-socket.on("voteReceived",()=>document.getElementById("gameInfo").innerText="Vote submitted!");
+socket.on("voteReceived",()=>{document.getElementById("gameInfo").innerText="Vote submitted! Waiting for others...";document.getElementById("votePlayers").innerHTML="";});
 socket.on("gameResult",data=>{
  document.getElementById("phaseTitle").innerText="GAME OVER";
  document.getElementById("votingArea").style.display="none";

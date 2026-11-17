@@ -135,7 +135,8 @@ io.on("connection", socket => {
 
     const voter = room.players.find(p => p.id === socket.id);
     const target = room.players.find(p => p.username === username);
-    if (!voter || !target || target.id === socket.id) return;
+    if (!voter || !target) return socket.emit("errorMessage", "Invalid vote!");
+    if (target.id === socket.id) return socket.emit("errorMessage", "You cannot vote for yourself!");
 
     room.votes[socket.id] = username;
     socket.emit("voteReceived");
