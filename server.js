@@ -148,6 +148,7 @@ io.on("connection", socket => {
 
     io.to(code).emit("clueTurn", {
       username: room.players[0].username,
+      playerId: room.players[0].id,
       index: 1,
       total: 4
     });
@@ -183,6 +184,7 @@ io.on("connection", socket => {
     } else {
       io.to(code).emit("clueTurn", {
         username: room.players[room.clueIndex].username,
+        playerId: room.players[room.clueIndex].id,
         index: room.clueIndex + 1,
         total: 4
       });

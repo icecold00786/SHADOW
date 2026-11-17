@@ -277,7 +277,7 @@ socket.on("yourRole",data=>{
 });
 
 socket.on("clueTurn",data=>{
- const mine=data.username===myUsername;
+ const mine=data.playerId===socket.id;
  myClueTurn=mine;
  el("clueTurnInfo").innerText="Clue "+data.index+" of "+data.total+" — "+data.username+"'s turn";
  el("clueInput").disabled=!mine;
