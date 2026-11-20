@@ -44,7 +44,7 @@ input:focus{border-color:#a477ff}
 .role-name{font-size:32px;font-weight:900;letter-spacing:4px}
 .word{font-size:34px;font-weight:900;letter-spacing:4px;color:#e5cfff;margin:18px 0}
 .game-info{padding:12px;background:#211c30;border-radius:12px;color:#c7b5e7;font-size:13px;margin:12px 0}
-.clue{padding:12px;margin:8px 0;background:#252137;border-radius:10px;text-align:left;font-size:14px}
+.ai-vote-feed{margin-top:12px;padding:10px;text-align:left;border-radius:10px;background:#171323;border:1px solid #51436c;color:#e5d7ff;font-size:13px;line-height:1.8}.ai-vote-line{padding:5px 8px;margin:4px 0;background:#29223a;border-radius:7px}.clue-timer{padding:10px;margin:8px 0;text-align:center;font-size:22px;font-weight:900;color:#baffd0;background:#152b27;border:1px solid #3d956b;border-radius:12px}.clue-timer.urgent{color:#ff7777;background:#351b25;border-color:#bd5366}.clue{padding:12px;margin:8px 0;background:#252137;border-radius:10px;text-align:left;font-size:14px}
 .clue strong{color:#d2baff}
 .vote{background:#29243a;border:1px solid #574a73}
 .winner{font-size:27px;font-weight:900;color:#a8ffbd;margin:15px 0}
@@ -76,6 +76,101 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
 .feature-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #332c45}
 .feature-row span{color:#c7b5e7}
 
+
+/* SHADOW 3D WORLD */
+.shadow-lobby{max-width:520px!important;min-height:calc(100svh - 85px)!important}
+.shadow-world{height:calc(100svh - 115px);min-height:570px;max-height:850px;position:relative;overflow:hidden;border:1px solid #49336e;border-radius:20px;background:radial-gradient(ellipse at 50% 45%,#30204c,#100d20 65%,#070711);box-shadow:0 0 35px #713bc455}
+#shadow3DCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.world-top{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.world-profile{display:flex;align-items:center;gap:9px;text-align:left;background:#100d20dd;border:1px solid #7654a5;color:white;padding:9px 12px;border-radius:12px}
+.world-profile>span:first-child{font-size:27px}
+.world-profile b,.world-profile small{display:block}
+.world-profile b{font-size:13px}
+.world-profile small{font-size:9px;color:#c5a6f3;margin-top:4px}
+.world-icon{background:#171126dd;border:1px solid #7654a5;color:white;border-radius:10px;padding:10px 13px;font-size:20px}
+.world-brand{position:absolute;top:92px;left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 0 18px #a36bff}
+.world-brand b{display:block;font-size:27px;letter-spacing:8px;color:#e2caff}
+.world-brand small{font-size:8px;letter-spacing:3px;color:#c1a5e9}
+.character-label{position:absolute;bottom:190px;left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 2px 8px #000}
+.character-label b{display:block;font-size:23px;letter-spacing:5px;color:#f0dfff}
+.character-label small{font-size:9px;letter-spacing:3px;color:#c5a6f3}
+.world-bottom{position:absolute;bottom:35px;left:14px;right:14px;z-index:2}
+.world-button{width:100%;padding:14px;margin:5px 0;border-radius:11px;background:#211632ed;border:1px solid #9569c5;color:white;font-weight:900;letter-spacing:2px}
+.start-world{background:linear-gradient(100deg,#7139c7,#b34fc4);box-shadow:0 0 22px #9b4cff66;font-size:16px;padding:17px}
+.world-shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.world-shortcuts button{background:#100d20ed;border:1px solid #49336e;color:#e5d7ff;border-radius:9px;padding:10px 2px;font-size:10px}
+.world-hint{position:absolute;bottom:13px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:2px;color:#b7a0d4;pointer-events:none}
+.character-level{padding:12px;background:#211632;border:1px solid #49336e;border-radius:10px;color:#d6baff;margin:12px 0}
+.character-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.character-card{position:relative;min-width:0;padding:14px 8px;border-radius:14px;background:linear-gradient(145deg,#29203d,#100e1c);border:1px solid #51406e;color:white;text-align:center}
+.character-card.selected{border:2px solid #b77cff;box-shadow:0 0 18px #995cff55}
+.character-card .character-symbol{font-size:45px;display:block;margin:7px}
+.character-card b{display:block;letter-spacing:2px;color:#e2caff}
+.character-card small{display:block;color:#aaa0bd;margin-top:7px;font-size:10px}
+.character-card.locked{opacity:.55;filter:grayscale(.7)}
+.character-card .lock-label{display:block;color:#ffc77c;font-size:10px;margin-top:8px}
+@media(max-height:650px){.shadow-world{height:570px}.world-brand{top:75px}.character-label{bottom:180px}}
+
+
+#shadowVoiceDock{display:none;width:100%;max-width:520px;margin:12px auto;padding:14px;background:#171326;border:1px solid #7653a8;border-radius:15px;text-align:center;box-shadow:0 0 22px #8054dc22}
+#shadowVoiceStatus{font-size:11px;letter-spacing:1.5px;color:#cbb3f4;margin-bottom:9px}
+#shadowMicButton{width:100%;padding:13px;border:1px solid #7653a8;border-radius:10px;background:#35244f;color:white;font-weight:bold}
+#shadowMicButton.muted{background:#48232e;border-color:#a34d60}
+
+
+/* SOLO LANDSCAPE GAME VIEW */
+body.solo-landscape{overflow-x:hidden}
+body.solo-landscape .screen.active{min-height:100svh}
+body.solo-landscape .screen.active .panel{width:100%;max-width:none;margin:0 auto;padding:10px 18px}
+body.solo-landscape .solo-classroom{min-height:190px;padding:12px 5%;display:flex;flex-direction:column;justify-content:space-around;background:radial-gradient(ellipse at center,#423454 0%,#171321 72%);perspective:1100px}
+body.solo-landscape .classroom-row{width:100%;justify-content:space-evenly;gap:clamp(18px,7vw,100px);margin:8px auto}
+body.solo-landscape .classroom-seat{max-width:190px;min-width:75px;padding:7px 10px}
+body.solo-landscape .classroom-row.back .classroom-seat{transform:rotateX(18deg) scale(.94)}
+body.solo-landscape .classroom-row.front .classroom-seat{transform:rotateX(-18deg) scale(1.04)}
+body.solo-landscape .classroom-face{font-size:clamp(34px,7vh,58px);height:clamp(42px,9vh,65px)}
+body.solo-landscape .classroom-desk{height:clamp(9px,2vh,16px);margin-top:8px}
+body.solo-landscape #clueInput{max-width:650px}
+body.solo-landscape .solo-secret{max-width:650px;margin:8px auto}
+@media(orientation:landscape) and (max-height:600px){
+ body.solo-landscape .screen.active .panel{padding:5px 14px}
+ body.solo-landscape .solo-classroom{min-height:145px;margin:5px 0;padding:5px 4%}
+ body.solo-landscape .classroom-row{margin:3px auto}
+ body.solo-landscape .classroom-face{height:38px;font-size:34px}
+ body.solo-landscape .classroom-seat{padding:4px 8px}
+ body.solo-landscape .classroom-title{margin-bottom:4px}
+}
+@media(orientation:portrait) and (max-width:900px){
+ body.solo-landscape .screen.active:has(.solo-classroom[style*="block"])::before{
+  content:"ROTATE YOUR PHONE TO PLAY";display:block;text-align:center;
+  color:#d9c1ff;font-weight:900;letter-spacing:2px;padding:12px;
+ }
+}
+
+/* SOLO CLASSROOM */
+.solo-classroom{width:100%;padding:18px 10px;margin:12px 0;border:1px solid #655087;border-radius:18px;background:linear-gradient(#25203a,#11101c);perspective:900px;overflow:hidden}
+.classroom-title{text-align:center;color:#d9c1ff;font-size:11px;letter-spacing:3px;margin-bottom:14px}
+.classroom-row{display:flex;justify-content:space-evenly;align-items:center;gap:clamp(8px,4vw,24px);margin:12px 0}
+.classroom-seat{flex:1;min-width:0;max-width:145px;text-align:center;padding:10px 4px 8px;background:linear-gradient(145deg,#39304f,#171321);border:1px solid #655087;border-radius:13px;box-shadow:0 7px 0 #090811;transform:rotateX(3deg)}
+.classroom-row.front .classroom-seat{transform:rotateX(-3deg);border-color:#a477ff}
+.classroom-face{font-size:clamp(32px,9vw,48px);height:55px;display:grid;place-items:center}
+.classroom-seat{position:relative}
+.classroom-number{position:absolute;top:5px;left:5px;width:25px;height:25px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:1000;color:white;z-index:2;border:1px solid #ffffff77;box-shadow:0 0 12px #0009}
+.player-number{width:27px;height:27px;min-width:27px;border-radius:9px;display:grid;place-items:center;font-size:14px;font-weight:1000;color:white;border:1px solid #ffffff66;box-shadow:0 0 12px #0008}
+
+.classroom-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.classroom-tag{font-size:9px;color:#c6addf;margin-top:5px}
+.classroom-seat.speaking{border:2px solid #a8ffbd;box-shadow:0 0 20px #8dffb566}
+.classroom-desk{height:8px;margin:7px 8px 0;border-radius:5px;background:linear-gradient(90deg,#60452f,#b18a5b,#60452f)}
+.solo-secret{padding:13px;margin:10px 0 14px;text-align:center;border:1px solid #9a72d2;border-radius:13px;background:#21172f}
+.solo-secret strong{display:block;font-size:10px;letter-spacing:2px;color:#c9a9ff}
+.solo-secret span{display:block;font-size:25px;font-weight:900;letter-spacing:3px;color:#fff;margin-top:6px}
+
+.ai-discussion-feed{margin-top:18px;padding:14px;border:1px solid #51436c;border-radius:16px;background:#171323;text-align:left}
+.ai-discussion-feed h3{color:#c9a7ff;font-size:14px;letter-spacing:1px;margin-bottom:12px}
+.ai-chat-line{margin:9px 0;padding:11px 13px;border-radius:12px;background:#29223a;border-left:3px solid #a879ed;color:#eee;font-size:14px;line-height:1.5}
+.ai-chat-line strong{color:#d5b5ff}
+
+.ai-vote-line.abstain{color:#ffbd83;border:1px dashed #a66b45;background:#302018}.vote{width:100%;margin:7px 0;padding:14px;text-align:left;border-radius:12px}.vote:disabled{opacity:.55}
 </style>
 </head>
 <body>
@@ -103,8 +198,10 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   <h1>WELCOME, PLAYER</h1>
   <p class="small">Create your identity and enter the mystery world.</p>
   <button class="btn" onclick="showScreen('profileSetupScreen')">CREATE YOUR PROFILE</button>
-  <button class="btn secondary" onclick="showScreen('profileSetupScreen')">CONTINUE AS GUEST</button>
-  <p class="small">Online Google login will be added in a later update.</p>
+  <button class="btn secondary" onclick="shadowOAuthLogin('google')">CONTINUE WITH GOOGLE</button>
+  <button class="btn secondary" onclick="shadowOAuthLogin('x')">CONTINUE WITH X</button>
+  <button class="btn ghost" onclick="showScreen('profileSetupScreen')">CONTINUE AS GUEST</button>
+  <p class="small">Sign in securely or continue as a guest.</p>
  </div>
 </section>
 
@@ -127,28 +224,41 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
  </div>
 </section>
 
-<section id="mainLobbyScreen" class="screen">
- <div class="panel">
-  <div class="profile-hero">
-   <div id="lobbyAvatar" class="big-avatar">🥷</div>
-   <h2 id="lobbyName">PLAYER</h2>
-   <div class="rank-pill">★ ROOKIE</div>
-   <div id="lobbyUID" class="uid-box">SHD-000000</div>
-   <button class="btn secondary" onclick="copyPlayerUID()">COPY PLAYER UID</button>
+
+<section id="mainLobbyScreen" class="screen shadow-lobby">
+ <div class="shadow-world">
+  <canvas id="shadow3DCanvas"></canvas>
+  <div class="world-top">
+   <button class="world-profile" onclick="openProfile()">
+    <span id="lobbyAvatar">🥷</span>
+    <span><b id="lobbyName">PLAYER</b><small id="worldLevel">LEVEL 1 · ROOKIE</small></span>
+   </button>
+   <button class="world-icon" onclick="showScreen('settingsScreen')">⚙</button>
   </div>
-  <div class="divider"></div>
-  <p class="small">YOUR MYSTERY JOURNEY BEGINS</p>
-  <button class="btn lobby-start" onclick="showScreen('homeScreen')">▶ START PLAYING</button>
-  <div class="menu-grid">
-   <button class="menu-tile" onclick="openProfile()"><span>👤</span>PROFILE</button>
-   <button class="menu-tile" onclick="showScreen('friendsScreen')"><span>👥</span>FRIENDS</button>
-   <button class="menu-tile" onclick="showScreen('inventoryScreen')"><span>🎒</span>INVENTORY</button>
-   <button class="menu-tile" onclick="showScreen('settingsScreen')"><span>⚙️</span>SETTINGS</button>
+  <div class="world-brand"><b>SHADOW</b><small>FIND THE SPY · TRUST NOBODY</small></div>
+  <div class="character-label"><b id="worldCharacterName">KAIRO</b><small>SHADOW WARRIOR</small></div>
+  <div class="world-bottom">
+   <button class="world-button" onclick="openCharacters()">CHARACTERS</button>
+   <button class="world-button start-world" onclick="showScreen('homeScreen')">▶ START PLAYING</button>
+   <div class="world-shortcuts">
+    <button onclick="showScreen('friendsScreen')">👥 FRIENDS</button>
+    <button onclick="showScreen('inventoryScreen')">🎒 INVENTORY</button>
+    <button onclick="openProfile()">👤 PROFILE</button>
+   </div>
   </div>
-  <p class="small" style="text-align:center">SHADOW · FIND THE SPY. TRUST NOBODY.</p>
+  <div class="world-hint">DRAG TO ROTATE CHARACTER</div>
  </div>
 </section>
 
+<section id="characterScreen" class="screen">
+ <div class="panel">
+  <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
+  <p class="small">YOUR WARRIOR COLLECTION</p>
+  <h2>CHOOSE YOUR CHARACTER</h2>
+  <div class="character-level">YOUR LEVEL: <b id="collectionLevel">1</b></div>
+  <div id="characterCollection" class="character-collection"></div>
+ </div>
+</section>
 <section id="profileScreen" class="screen">
  <div class="panel">
   <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
@@ -205,8 +315,12 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   <button class="back" onclick="showScreen('mainLobbyScreen')">← BACK TO LOBBY</button>
   <h2>SETTINGS</h2>
   <div class="feature-row"><span>Game</span><strong>SHADOW</strong></div>
+  <div class="feature-row"><span>Game Language / खेल की भाषा</span><select id="gameLanguage" onchange="setGameLanguage(this.value)" class="btn secondary"><option value="en">English</option><option value="hi">हिंदी</option></select></div>
   <div class="feature-row"><span>Account</span><strong>Guest profile</strong></div>
-  <div class="feature-row"><span>Sound</span><strong>Coming soon</strong></div>
+  <div class="feature-row"><span>Background Music</span><button id="musicToggle" class="btn secondary" onclick="toggleShadowMusic()">ON</button></div>
+  <div class="feature-row"><input id="musicVolume" type="range" min="0" max="100" value="75" oninput="setShadowVolume('music',this.value)" style="width:100%"><span id="musicVolumeLabel">75%</span></div>
+  <div class="feature-row"><span>Sound Effects</span><button id="sfxToggle" class="btn secondary" onclick="toggleShadowSfx()">ON</button></div>
+  <div class="feature-row"><input id="sfxVolume" type="range" min="0" max="100" value="80" oninput="setShadowVolume('sfx',this.value)" style="width:100%"><span id="sfxVolumeLabel">80%</span></div>
   <div class="feature-row"><span>Voice chat</span><strong>Coming soon</strong></div>
   <button class="btn secondary" onclick="resetShadowProfile()">RESET LOCAL PROFILE</button>
  </div>
@@ -220,11 +334,12 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   <h2>PLAY SHADOW</h2>
   <div class="role-card">
    <div class="role-name">CLASSIC SHADOW</div>
-   <p class="small">3 INSIDERS · 1 SHADOW · 4 PLAYERS</p>
+   <p class="small">3 DETECTIVES · 1 SPY · 4 PLAYERS</p>
   </div>
   <input id="username" maxlength="18" placeholder="Your player name">
   <button class="btn" onclick="createRoom()">CREATE ROOM</button>
   <button class="btn secondary" onclick="showScreen('joinScreen')">JOIN ROOM</button>
+  <button class="btn secondary" onclick="createSoloRoom()">SOLO VS AI · 1 PLAYER + 3 AI</button>
   <p class="small">Invite 3 friends and find the Shadow.</p>
  </div>
 </section>
@@ -275,7 +390,10 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   <div class="panel">
    <p class="small">ROUND 01</p>
    <h2>CLUE ROUND</h2>
+   <div id="soloClassroomClue" class="solo-classroom" style="display:none"></div>
+   <div id="soloSecretWord" class="solo-secret" style="display:none"></div>
    <div id="clueTurnInfo" class="game-info">Waiting for clue turn...</div>
+<div id="clueTimer" class="clue-timer">⏱ 40s</div>
    <input id="clueInput" maxlength="100" placeholder="Write your clue..." disabled>
    <button id="clueButton" class="btn" onclick="sendClue()" disabled>SUBMIT CLUE</button>
    <div class="divider"></div>
@@ -289,8 +407,10 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
    <p class="small">ROUND 02</p>
    <h2>DISCUSSION</h2>
    <p class="small">Discuss the clues. Find the Shadow.</p>
+   <div id="soloClassroomDiscussion" class="solo-classroom" style="display:none"></div>
    <div id="discussionClues"></div>
-   <div class="game-info">Voice chat is planned for the next development stage.</div>
+   <div id="aiDiscussionFeed" class="ai-discussion-feed"><h3>AI STUDENTS TALK</h3></div>
+   <div class="game-info">Online players can talk here using voice chat.</div>
    <button id="votingButton" class="btn" onclick="startVoting" style="display:none">START VOTING</button>
   </div>
  </section>
@@ -298,10 +418,13 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
  <section id="votingScreen" class="screen">
   <div class="panel">
    <p class="small">FINAL DECISION</p>
-   <h2>SECRET VOTING</h2>
+   <h2>LIVE VOTING</h2>
    <p class="small">Who do you think is the Shadow? You cannot vote for yourself.</p>
+   <p class="small">NO VOTE = ABSTAIN · Abstain votes are not counted.</p>
    <div id="votePlayers"></div>
    <p id="voteStatus" class="game-info">Choose one player.</p>
+   <div id="voteTimer" class="clue-timer">⏱ 35s</div>
+   <div id="aiVoteFeed" class="ai-vote-feed"></div>
   </div>
  </section>
 
@@ -315,29 +438,289 @@ footer{font-size:10px;color:#6e687c;text-align:center;padding-top:14px}
   </div>
  </section>
 
+ <div id="shadowVoiceDock" style="display:none">
+  <div id="shadowVoiceStatus">VOICE CHAT · DISCONNECTED</div>
+  <button id="shadowMicButton" type="button" onclick="shadowVoiceToggle()">🎙️ TURN MIC ON</button>
+ </div>
  <div id="message"></div>
  <footer>SHADOW © 2026 · THE MYSTERY BEGINS</footer>
 </div>
 
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE_MODULE from "three";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+window.THREE=THREE_MODULE;
+window.GLTFLoader=GLTFLoader;
+</script>
 <script src="/socket.io/socket.io.js"></script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+try {
+  const response = await fetch("/api/config");
+  if (!response.ok) throw new Error("Config request failed");
+  const config = await response.json();
+  window.shadowSupabase = createClient(config.supabaseUrl, config.supabaseKey);
+
+  const { data: sessionData } = await window.shadowSupabase.auth.getSession();
+  window.shadowAuthUser = sessionData.session?.user || null;
+
+  window.shadowSupabase.auth.onAuthStateChange((_event, session) => {
+    window.shadowAuthUser = session?.user || null;
+  });
+
+  window.shadowOAuthLogin = async function(provider) {
+    if (!window.shadowSupabase) return alert("Login service is loading. Please try again.");
+    const { error } = await window.shadowSupabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: window.location.origin }
+    });
+    if (error) alert("Login failed: " + error.message);
+  };
+  window.dispatchEvent(new Event("shadow-supabase-ready"));
+  console.log("SHADOW Supabase client ready");
+} catch (error) {
+  console.error("SHADOW Supabase setup:", error);
+}
+</script>
+
 <script>
-const socket=io();
+const savedGameLanguage=localStorage.getItem("shadowLanguage")||"en";
+function setGameLanguage(lang){
+ localStorage.setItem("shadowLanguage",lang);
+ document.documentElement.lang=lang;
+ const picker=el("gameLanguage");
+ if(picker)picker.value=lang;
+ applyGameLanguage();
+}
+const shadowHindi={
+"WELCOME, PLAYER":"स्वागत है, खिलाड़ी",
+"Create your identity and enter the mystery world.":"अपनी पहचान बनाएं और रहस्यमयी दुनिया में प्रवेश करें।",
+"CREATE YOUR PROFILE":"अपनी प्रोफाइल बनाएं",
+"CONTINUE AS GUEST":"अतिथि के रूप में जारी रखें",
+"CREATE YOUR IDENTITY":"अपनी पहचान बनाएं",
+"CHOOSE YOUR ANIME AVATAR":"अपना अवतार चुनें",
+"CREATE PROFILE":"प्रोफाइल बनाएं",
+"BACK":"वापस",
+"CHARACTERS":"किरदार",
+"START PLAYING":"खेल शुरू करें",
+"FRIENDS":"दोस्त",
+"INVENTORY":"सामान",
+"PROFILE":"प्रोफाइल",
+"SETTINGS":"सेटिंग्स",
+"BACK TO LOBBY":"लॉबी में वापस जाएं",
+"YOUR FRIENDS":"आपके दोस्त",
+"SEARCH PLAYER":"खिलाड़ी खोजें",
+"FRIEND REQUESTS":"दोस्ती के अनुरोध",
+"YOUR INVENTORY":"आपका सामान",
+"Background Music":"बैकग्राउंड संगीत",
+"Sound Effects":"साउंड इफेक्ट",
+"Voice chat":"वॉइस चैट",
+"RESET LOCAL PROFILE":"प्रोफाइल रीसेट करें",
+"CHOOSE YOUR GAME":"अपना गेम चुनें",
+"PLAY SHADOW":"SHADOW खेलें",
+"CREATE ROOM":"रूम बनाएं",
+"JOIN ROOM":"रूम में जुड़ें",
+"JOIN A ROOM":"रूम में शामिल हों",
+"Enter your friend's room code to join the game.":"गेम में शामिल होने के लिए दोस्त का रूम कोड डालें।",
+"Your player name":"आपका खिलाड़ी नाम",
+"ENTER ROOM CODE":"रूम कोड डालें",
+"3 INSIDERS · 1 SHADOW · 4 PLAYERS":"3 इनसाइडर · 1 शैडो · 4 खिलाड़ी",
+"SOLO VS AI · 1 PLAYER + 3 AI":"सोलो बनाम AI · 1 खिलाड़ी + 3 AI",
+"Invite 3 friends and find the Shadow.":"3 दोस्तों को बुलाएं और शैडो को खोजें।",
+"ROUND 01":"राउंड 01",
+"CLUE ROUND":"हिंट राउंड",
+"Write your clue...":"अपना हिंट लिखें...",
+"SUBMIT CLUE":"हिंट भेजें",
+"CLUES SO FAR":"अब तक के हिंट",
+"ROUND 02":"राउंड 02",
+"DISCUSSION":"चर्चा",
+"Discuss the clues. Find the Shadow.":"हिंट पर चर्चा करें। शैडो को खोजें।",
+"AI STUDENTS TALK":"AI खिलाड़ियों की चर्चा",
+"START VOTING":"वोटिंग शुरू करें",
+"FINAL DECISION":"आखिरी फैसला",
+"SECRET VOTING":"गुप्त वोटिंग",
+"Who do you think is the Shadow? You cannot vote for yourself.":"आपके हिसाब से शैडो कौन है? आप खुद को वोट नहीं दे सकते।",
+"Choose one player.":"एक खिलाड़ी चुनें।",
+"THE MYSTERY IS OVER":"रहस्य खत्म हुआ",
+"YOUR SECRET IDENTITY":"आपकी गुप्त पहचान",
+"ROLE REVEAL":"किरदार का खुलासा",
+"Keep your secret safe!":"अपना राज़ छिपाकर रखें!",
+"Do not show your screen to other players.":"अपनी स्क्रीन दूसरे खिलाड़ियों को न दिखाएं।",
+"CONTINUE TO CLUES":"हिंट राउंड पर जाएं",
+"SHADOW CLASSROOM · FACE TO FACE":"शैडो क्लासरूम · आमने-सामने",
+"Your warrior collection":"आपके योद्धाओं का संग्रह",
+"Search for a player using their unique SHADOW UID.":"खिलाड़ी की SHADOW UID से खोजें।",
+"Enter player UID":"खिलाड़ी की UID डालें",
+"Game Language / खेल की भाषा":"खेल की भाषा",
+"Game":"गेम",
+"Account":"खाता",
+"Guest profile":"अतिथि प्रोफाइल"
+};
+
+const shadowOriginalNodes=new WeakMap();
+function applyGameLanguage(){
+ const lang=localStorage.getItem("shadowLanguage")||"en";
+ document.documentElement.lang=lang;
+ const picker=document.getElementById("gameLanguage");
+ if(picker)picker.value=lang;
+ document.querySelectorAll("body *").forEach(node=>{
+  if(node.tagName==="SCRIPT"||node.tagName==="STYLE")return;
+  node.childNodes.forEach(child=>{
+   if(child.nodeType!==3)return;
+   if(!shadowOriginalNodes.has(child))shadowOriginalNodes.set(child,child.nodeValue);
+   const original=shadowOriginalNodes.get(child);
+   const key=original.trim();
+   if(!key)return;
+   const translated=lang==="hi"?(shadowHindi[key]||key):key;
+   child.nodeValue=original.replace(key,translated);
+  });
+ });
+ document.querySelectorAll("input[placeholder]").forEach(input=>{
+  if(!input.dataset.originalPlaceholder)input.dataset.originalPlaceholder=input.placeholder;
+  const original=input.dataset.originalPlaceholder;
+  input.placeholder=lang==="hi"?(shadowHindi[original]||original):original;
+ });
+}
+
+const socket=io();window.shadowSocket=socket;
 let roomHost=false,myUsername="",roomCode="",myVoteSubmitted=false,myClueTurn=false;
 const el=id=>document.getElementById(id);
-const screens=["introScreen","welcomeScreen","profileSetupScreen","mainLobbyScreen","profileScreen","friendsScreen","inventoryScreen","settingsScreen","homeScreen","joinScreen","lobbyScreen","roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
+applyGameLanguage();
+const screens=["introScreen","welcomeScreen","profileSetupScreen","mainLobbyScreen","characterScreen","profileScreen","friendsScreen","inventoryScreen","settingsScreen","homeScreen","joinScreen","lobbyScreen","roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
 
 function showScreen(id){
  screens.forEach(s=>el(s).classList.toggle("active",s===id));
+ const soloGameScreens=["roleScreen","clueScreen","discussionScreen","votingScreen","resultScreen"];
+ document.body.classList.toggle("solo-landscape",soloMode&&soloGameScreens.includes(id));
  window.scrollTo(0,0);
 }
-function message(t){el("message").innerText=t}
+function gameText(t){return localStorage.getItem("shadowLanguage")==="hi"?(shadowHindi[t]||t):t}
+function message(t){el("message").innerText=gameText(t)}
+let soloMode=false,soloPlayers=[],soloRoleData=null;
+let clueCountdownInterval=null;
+let voteCountdownInterval=null;
+function startVoteCountdown(seconds){
+ if(voteCountdownInterval)clearInterval(voteCountdownInterval);
+ const t=el("voteTimer");if(!t)return;
+ const end=Date.now()+seconds*1000;
+ function update(){
+  const left=Math.max(0,Math.ceil((end-Date.now())/1000));
+  t.innerText="⏱ "+left+"s";
+  t.classList.toggle("urgent",left<=5);
+  if(left<=0)clearInterval(voteCountdownInterval);
+ }
+ update();voteCountdownInterval=setInterval(update,200);
+}
+function stopVoteCountdown(){
+ if(voteCountdownInterval)clearInterval(voteCountdownInterval);
+ voteCountdownInterval=null;
+}
+function stopClueCountdown(){
+ if(clueCountdownInterval)clearInterval(clueCountdownInterval);
+ clueCountdownInterval=null;
+ const t=el("clueTimer");
+ if(t){t.classList.remove("urgent");t.innerText="⏱ Waiting";}
+}
+function startClueCountdown(seconds){
+ stopClueCountdown();
+ const t=el("clueTimer");if(!t)return;
+ const end=Date.now()+seconds*1000;
+ function update(){
+  const left=Math.max(0,Math.ceil((end-Date.now())/1000));
+  t.innerText="⏱ "+left+"s";
+  t.classList.toggle("urgent",left<=5);
+  if(left<=0)stopClueCountdown();
+ }
+ update();clueCountdownInterval=setInterval(update,200);
+}
+function playTurnAlert(){
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  const ctx=new AC();
+  ctx.resume().then(()=>{
+   [660,880].forEach((freq,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type="sine";o.frequency.value=freq;
+    const at=ctx.currentTime+i*.22;
+    g.gain.setValueAtTime(.001,at);
+    g.gain.exponentialRampToValueAtTime(.18,at+.04);
+    g.gain.exponentialRampToValueAtTime(.001,at+.28);
+    o.connect(g);g.connect(ctx.destination);
+    o.start(at);o.stop(at+.3);
+   });
+  });
+  setTimeout(()=>ctx.close(),1200);
+ }catch(e){}
+}
+
+function renderSoloClassroom(){
+ const ids=["soloClassroomClue","soloClassroomDiscussion"];
+ ids.forEach(id=>{
+  const root=el(id);if(!root)return;
+  root.style.display=soloMode?"block":"none";
+  if(!soloMode)return;
+  const list=soloPlayers||[];
+  const mid=Math.ceil(list.length/2);
+  const rows=[list.slice(0,mid),list.slice(mid).reverse()];
+  root.innerHTML='<div class="classroom-title">SHADOW CLASSROOM · FACE TO FACE</div>';
+  rows.forEach((group,i)=>{
+   if(!group.length)return;
+   const row=document.createElement("div");
+   row.className="classroom-row "+(i?"front":"back");
+   group.forEach(player=>{
+    const card=document.createElement("div");
+    card.className="classroom-seat";
+    if(player.id===window.shadowSocket?.id)card.style.borderColor="#b88aff";
+    let avatar=player.avatar||(player.isAI?({KAI:"🦊",RAVEN:"🐺",ZERO:"🦁"}[player.username]||"🤖"):"🥷");
+    if(player.id===window.shadowSocket?.id && typeof shadowProfile!=="undefined" && shadowProfile)avatar=shadowProfile.avatar;
+    const playerNo=list.indexOf(player)+1;
+    const badgeColors=["#e34e79","#278de0","#9a61e8","#d18a24"];
+    card.innerHTML='<div class="classroom-number" style="background:'+badgeColors[(playerNo-1)%4]+'">'+playerNo+'</div><div class="classroom-face"></div><div class="classroom-name"></div><div class="classroom-tag"></div><div class="classroom-desk"></div>';
+    card.querySelector(".classroom-face").textContent=avatar;
+    card.querySelector(".classroom-name").textContent=player.username;
+    card.querySelector(".classroom-tag").textContent=player.eliminated?"SPECTATOR":player.id===window.shadowSocket?.id?"YOU":player.isAI?"AI STUDENT":"PLAYER";
+    row.appendChild(card);
+   });
+   root.appendChild(row);
+  });
+ });
+}
+function updateSoloSecret(){
+ const box=el("soloSecretWord");if(!box)return;
+ box.style.display=soloMode&&soloRoleData?"block":"none";
+ if(!soloRoleData)return;
+ box.innerHTML="";
+ const hindi=localStorage.getItem("shadowLanguage")==="hi";
+ const spy=soloRoleData.role==="SHADOW";
+ const label=document.createElement("strong");
+ label.textContent=spy?(hindi?"आपकी भूमिका · गुप्त शब्द नहीं":"YOUR ROLE · NO SECRET WORD"):(hindi?"आपका गुप्त शब्द":"YOUR SECRET WORD");
+ const word=document.createElement("span");
+ word.textContent=spy?(hindi?"कोई शब्द नहीं":"NO WORD"):(soloRoleData.word||"");
+ box.append(label,word);
+}
+
 
 function createRoom(){
+ soloMode=false;document.body.classList.remove("solo-landscape");
  myUsername=el("username").value.trim();
  if(!myUsername)return message("Enter your username first!");
  socket.emit("createRoom",myUsername);
 }
+function createSoloRoom(){
+ myUsername=el("username").value.trim();
+ if(!myUsername)return message("Enter your username first!");
+ soloMode=true;
+ if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(()=>{});
+ el("shadowVoiceDock").style.display="none";
+ shadowVoiceActive=false;
+ socket.emit("createSoloRoom",myUsername,localStorage.getItem("shadowLanguage")||"en");
+}
 function joinRoom(){
+ soloMode=false;document.body.classList.remove("solo-landscape");
  myUsername=el("joinUsername").value.trim();
  roomCode=el("roomCode").value.trim().toUpperCase();
  if(!myUsername||!roomCode)return message("Enter your name and room code!");
@@ -349,7 +732,14 @@ function copyCode(){
   navigator.clipboard.writeText(roomCode).then(()=>message("Room code copied!")).catch(()=>message("Room code: "+roomCode));
  }else message("Room code: "+roomCode);
 }
-function startGame(){socket.emit("startGame")}
+function startGame(){
+ const b=el("startButton");
+ if(b&&b.disabled)return;
+ if(b)b.disabled=true;
+ message(gameText("Starting game..."));
+ socket.emit("startGame");
+ setTimeout(()=>{if(b)b.disabled=false;},2500);
+}
 function sendClue(){
  const clue=el("clueInput").value.trim();
  if(!clue)return message("Write your clue first!");
@@ -367,43 +757,97 @@ function playAgain(){socket.emit("playAgain")}
 function showPlayers(players){
  el("count").innerText=players.length;
  el("players").innerHTML="";
- players.forEach(p=>{
+ players.forEach((p,index)=>{
   const d=document.createElement("div");
   d.className="player";
   const a=document.createElement("div");a.className="avatar";a.innerText=p.username.charAt(0).toUpperCase();
+  const number=document.createElement("div");number.className="player-number";
+  const colors=["#e34e79","#278de0","#9a61e8","#d18a24"];
+  number.style.background=colors[index%4];number.innerText=index+1;
   const n=document.createElement("div");n.className="player-name";n.innerText=p.username+(p.id===socket.id?" (YOU)":"");
   const tag=document.createElement("div");tag.className="player-tag";tag.innerText=p.id===socket.id&&roomHost?"HOST":"PLAYER";
-  d.append(a,n,tag);el("players").appendChild(d);
+  d.append(number,a,n,tag);el("players").appendChild(d);
  });
  el("startButton").style.display=roomHost?"block":"none";
  el("startButton").disabled=players.length!==4;
 }
+let clueTranslationCounter=0;
+const clueTranslationTargets=new Map();
+
 function showClues(list,target){
  target.innerHTML="";
  (list||[]).forEach(item=>{
   const d=document.createElement("div");d.className="clue";
   const name=document.createElement("strong");name.innerText=item.username+": ";
   const clue=document.createElement("span");clue.innerText=item.clue;
-  d.append(name,clue);target.appendChild(d);
+  const btn=document.createElement("button");
+  btn.className="btn secondary";
+  btn.innerText=localStorage.getItem("shadowLanguage")==="hi"?"अनुवाद":"Translate";
+  btn.style.marginLeft="8px";
+  const output=document.createElement("div");
+  output.className="translated-clue";
+  output.style.marginTop="8px";
+  const requestId="clue-"+(++clueTranslationCounter);
+  clueTranslationTargets.set(requestId,output);
+  btn.onclick=()=>{
+   btn.disabled=true;
+   btn.innerText="...";
+   socket.emit("translateClue",{
+    text:item.clue,
+    target:localStorage.getItem("shadowLanguage")||"en",
+    requestId
+   });
+  };
+  d.append(name,clue,btn,output);
+  target.appendChild(d);
  });
 }
 
 socket.on("connect",()=>console.log("Connected to SHADOW"));
 socket.on("errorMessage",message);
+socket.on("clueTranslated",data=>{
+ if(!data)return;
+ const output=clueTranslationTargets.get(data.requestId);
+ if(!output)return;
+ output.innerText=data.error||data.translated||"Translation unavailable";
+ clueTranslationTargets.delete(data.requestId);
+});
 
 socket.on("roomCreated",data=>{
- roomCode=data.roomCode;roomHost=true;
+ roomCode=data.roomCode;roomHost=true;soloMode=data.mode==="solo";soloPlayers=data.players||[];renderSoloClassroom();
  el("displayCode").innerText=roomCode;
  showPlayers(data.players);showScreen("lobbyScreen");
- message("Room created! Invite exactly 3 friends.");
+ message(data.mode==="solo"?"Solo room ready! 3 AI players joined.":"Room created! Invite exactly 3 friends.");
 });
 socket.on("roomJoined",data=>{
- roomCode=data.roomCode;roomHost=data.host===socket.id;
+ roomCode=data.roomCode;roomHost=data.host===socket.id;soloMode=data.mode==="solo";soloPlayers=data.players||[];renderSoloClassroom();
  el("displayCode").innerText=roomCode;
  showPlayers(data.players);showScreen("lobbyScreen");
  message("Joined room successfully!");
 });
-socket.on("playerUpdate",showPlayers);
+socket.on("playerUpdate",players=>{showPlayers(players);if(soloMode){soloPlayers=players||[];renderSoloClassroom();}});
+
+socket.on("playerEliminated",data=>{
+ if(!data)return;
+ soloPlayers=data.players||soloPlayers;
+ renderSoloClassroom();
+});
+socket.on("soloNewRound",data=>{
+ if(!data)return;
+ soloPlayers=data.players||soloPlayers;
+ renderSoloClassroom();
+ el("clues").innerHTML="";
+ el("discussionClues").innerHTML="";
+ el("aiDiscussionFeed").innerHTML="<h3>AI STUDENTS TALK</h3>";
+ el("clueInput").value="";
+ el("clueInput").disabled=true;
+ el("clueButton").disabled=true;
+ myClueTurn=false;
+ updateSoloSecret();
+ showScreen("clueScreen");
+ message(gameText("New clue round! Watch the remaining players carefully."));
+});
+
 socket.on("hostChanged",data=>{
  roomHost=data.host===socket.id;
  el("startButton").style.display=roomHost?"block":"none";
@@ -411,7 +855,7 @@ socket.on("hostChanged",data=>{
 });
 
 socket.on("gameStarted",()=>{
- showScreen("roleScreen");
+ stopClueCountdown();showScreen("roleScreen");
  el("role").innerText="REVEALING...";
  el("secretWord").innerText="";
  el("clues").innerHTML="";
@@ -425,11 +869,12 @@ socket.on("gameStarted",()=>{
 });
 
 socket.on("yourRole",data=>{
- el("role").innerText=data.role;
+ el("role").innerText=data.role==="SHADOW"?"SPY":"DETECTIVE";
  el("role").style.color=data.role==="SHADOW"?"#ff7777":"#a8ffbd";
  el("category").innerText=data.category?"CATEGORY: "+data.category:"";
  el("secretWord").innerText=data.word||"NO WORD";
- el("secretHint").innerText=data.role==="SHADOW"?"You have no secret word. Blend in!":"Keep your word secret!";
+ soloRoleData=data;updateSoloSecret();
+ el("secretHint").innerText=gameText(data.role==="SHADOW"?"You are the SPY. You have no secret word. Blend in!":"You are a DETECTIVE. Keep your word secret!");
 });
 
 socket.on("clueTurn",data=>{
@@ -438,7 +883,8 @@ socket.on("clueTurn",data=>{
  el("clueTurnInfo").innerText="Clue "+data.index+" of "+data.total+" — "+data.username+"'s turn";
  el("clueInput").disabled=!mine;
  el("clueButton").disabled=!mine;
- if(mine)message("Your turn! Give one short clue.");
+ startClueCountdown(data.duration||40);
+ if(mine){playTurnAlert();message("Your turn! Give one short clue.");}
  else message("Waiting for "+data.username+" to give a clue.");
 });
 
@@ -446,7 +892,21 @@ socket.on("cluesUpdate",list=>{
  showClues(list,el("clues"));
  showClues(list,el("discussionClues"));
 });
+socket.on("aiDiscussionMessage",data=>{
+ const feed=el("aiDiscussionFeed");
+ if(!feed||!data)return;
+ const item=document.createElement("div");
+ item.className="ai-chat-line";
+ const name=document.createElement("strong");
+ name.textContent=data.username+": ";
+ const msg=document.createElement("span");
+ msg.textContent=data.message;
+ item.append(name,msg);
+ feed.appendChild(item);
+});
+
 socket.on("cluesComplete",()=>{
+ stopClueCountdown();
  myClueTurn=false;showScreen("discussionScreen");
  el("votingButton").style.display=roomHost?"block":"none";
  message("All clues submitted! Discuss and find the Shadow.");
@@ -456,7 +916,14 @@ socket.on("votingStarted",players=>{
  showScreen("votingScreen");
  el("votePlayers").innerHTML="";
  el("voteStatus").innerText="Choose one player.";
+ el("aiVoteFeed").innerHTML="<strong>LIVE VOTES</strong>";
+ startVoteCountdown(35);
  myVoteSubmitted=false;
+ if(soloMode&&soloPlayers.some(p=>p.id===socket.id&&p.eliminated)){
+  el("voteStatus").innerText="You are eliminated — spectating this vote. You cannot vote.";
+  myVoteSubmitted=true;
+  return;
+ }
  players.forEach(name=>{
   const b=document.createElement("button");
   b.className="btn vote";
@@ -472,23 +939,54 @@ socket.on("votingStarted",players=>{
   el("votePlayers").appendChild(b);
  });
 });
-socket.on("voteReceived",()=>{el("voteStatus").innerText="Your secret vote has been received!"});
+socket.on("aiVoteUpdate",data=>{
+ if(!data)return;
+ const feed=el("aiVoteFeed");
+ if(!feed)return;
+ const line=document.createElement("div");
+ line.className="ai-vote-line";
+ line.innerText=data.voter+" ➜ voted for "+data.target;
+ feed.appendChild(line);
+});
+socket.on("votePublicUpdate",data=>{
+ if(!data)return;
+ const feed=el("aiVoteFeed");
+ if(!feed)return;
+ const line=document.createElement("div");
+ line.className="ai-vote-line";
+ line.innerText=data.voter+" ➜ voted for "+data.target;
+ feed.appendChild(line);
+});
+socket.on("voteAbstainUpdate",data=>{
+ if(!data)return;
+ const feed=el("aiVoteFeed");
+ if(!feed)return;
+ const line=document.createElement("div");
+ line.className="ai-vote-line abstain";
+ line.innerText=data.voter+" ➜ ABSTAINED · No vote";
+ feed.appendChild(line);
+});
+socket.on("voteReceived",()=>{el("voteStatus").innerText="Your vote has been received!"});
 
 socket.on("gameResult",data=>{
+ stopVoteCountdown();
  showScreen("resultScreen");
  const won=data.winner==="INSIDERS";
  const area=el("resultArea");area.innerHTML="";
- const winner=document.createElement("div");winner.className="winner";winner.innerText=won?"INSIDERS WIN!":"SHADOW WINS!";
+ const winner=document.createElement("div");winner.className="winner";winner.innerText=won?"DETECTIVES WIN!":"SPY WINS!";
  area.appendChild(winner);
  function resultLine(label,value){
   const p=document.createElement("p");p.innerText=label+": "+value;area.appendChild(p);
  }
- resultLine("Shadow",data.spy);
+ resultLine("SPY",data.spy);
  resultLine("Secret Word",data.word);
- if(data.tie)resultLine("Result","Voting ended in a tie. No one was eliminated.");
- else{
-  resultLine("Eliminated",data.eliminated);
-  resultLine("Outcome",data.caught?"The Shadow was caught!":"An Insider was eliminated. The Shadow escaped!");
+ if(data.tie){
+  resultLine("Result","Voting ended in a tie. No one was eliminated.");
+ }else{
+  resultLine("Eliminated",data.eliminated||"None");
+  if(data.caught)resultLine("Outcome","The Spy was caught! Detectives win.");
+  else if(data.eliminated)resultLine("Outcome","A Detective was eliminated. The Spy escaped!");
+  else resultLine("Outcome","The Spy wins without an elimination.");
  }
  const h=document.createElement("h3");h.innerText="VOTE RESULTS";area.appendChild(h);
  Object.entries(data.votes||{}).forEach(([name,count])=>resultLine(name,count+" vote(s)"));
@@ -497,9 +995,10 @@ socket.on("gameResult",data=>{
 });
 
 socket.on("gameReset",data=>{
+ stopClueCountdown();stopVoteCountdown();
  roomHost=data.host===socket.id;
  showPlayers(data.players);showScreen("lobbyScreen");
- el("role").innerText="";el("secretWord").innerText="";
+ el("role").innerText="";el("secretWord").innerText="";soloRoleData=null;updateSoloSecret();
  el("clues").innerHTML="";el("discussionClues").innerHTML="";
  el("playAgainButton").style.display="none";
  message("New round ready! Waiting for host.");
@@ -513,15 +1012,39 @@ el("votingButton").onclick=()=>startVoting();
 let selectedShadowAvatar = "🥷";
 let shadowProfile = null;
 
-function enterShadow(){
+async function enterShadow(){
  try{
-  shadowProfile=JSON.parse(localStorage.getItem("shadowProfile")||"null");
- }catch(e){shadowProfile=null}
- if(shadowProfile){
-  renderShadowProfile();
-  showScreen("mainLobbyScreen");
- }else{
-  showScreen("welcomeScreen");
+  if(window.shadowSupabase){
+   const {data:{session}} = await window.shadowSupabase.auth.getSession();
+   if(session){
+    const {data,error} = await window.shadowSupabase
+     .from("profiles").select("id,username,uid")
+     .eq("id",session.user.id).maybeSingle();
+    if(error) throw error;
+    if(data){
+     shadowProfile={name:data.username,avatar:"🥷",uid:"SHD-"+data.uid,rank:"Rookie",level:1,accountId:data.id};
+     localStorage.setItem("shadowProfile",JSON.stringify(shadowProfile));
+     renderShadowProfile();
+     showScreen("mainLobbyScreen");
+    }else{
+     el("profileName").value="";
+     showScreen("profileSetupScreen");
+     message("Choose your SHADOW username to finish setup.");
+    }
+    return;
+   }
+  }
+  try{shadowProfile=JSON.parse(localStorage.getItem("shadowProfile")||"null");}
+  catch(e){shadowProfile=null}
+  if(shadowProfile){
+   renderShadowProfile();
+   showScreen("mainLobbyScreen");
+  }else{
+   showScreen("welcomeScreen");
+  }
+ }catch(error){
+  console.error("SHADOW account load:",error);
+  message("Could not load account. Please try again.");
  }
 }
 
@@ -531,23 +1054,42 @@ function chooseAvatar(button){
  selectedShadowAvatar=button.dataset.avatar;
 }
 
-function createShadowProfile(){
+async function createShadowProfile(){
  const name=el("profileName").value.trim();
  if(!name)return message("Please enter your player name!");
- if(name.length<3)return message("Name must be at least 3 characters!");
- const uid="SHD-"+Math.random().toString(36).substring(2,8).toUpperCase();
- shadowProfile={name,avatar:selectedShadowAvatar,uid,rank:"Rookie",level:1};
- localStorage.setItem("shadowProfile",JSON.stringify(shadowProfile));
- renderShadowProfile();
- showScreen("mainLobbyScreen");
- message("Your SHADOW profile is ready!");
+ if([...name].length>12 || /\s/.test(name) || /\p{Extended_Pictographic}/u.test(name))
+  return message("Name must be 1-12 characters, no spaces or emojis.");
+ try{
+  let session=null;
+  if(window.shadowSupabase){
+   const result=await window.shadowSupabase.auth.getSession();
+   session=result.data.session;
+  }
+  if(session){
+   const {data,error}=await window.shadowSupabase.from("profiles")
+    .insert({id:session.user.id,username:name})
+    .select("id,username,uid").single();
+   if(error)throw error;
+   shadowProfile={name:data.username,avatar:selectedShadowAvatar,uid:"SHD-"+data.uid,rank:"Rookie",level:1,accountId:data.id};
+  }else{
+   const uid="SHD-"+Math.random().toString(36).substring(2,8).toUpperCase();
+   shadowProfile={name,avatar:selectedShadowAvatar,uid,rank:"Rookie",level:1};
+  }
+  localStorage.setItem("shadowProfile",JSON.stringify(shadowProfile));
+  renderShadowProfile();
+  showScreen("mainLobbyScreen");
+  message("Your SHADOW profile is ready!");
+ }catch(error){
+  console.error("SHADOW profile save:",error);
+  message(error.code==="23505"?"That username is already taken.":"Could not save profile: "+error.message);
+ }
 }
 
 function renderShadowProfile(){
  if(!shadowProfile)return;
  el("lobbyAvatar").innerText=shadowProfile.avatar;
  el("lobbyName").innerText=shadowProfile.name;
- el("lobbyUID").innerText=shadowProfile.uid;
+ if(el("lobbyUID"))el("lobbyUID").innerText=shadowProfile.uid;
  el("profileAvatar").innerText=shadowProfile.avatar;
  el("profileDisplayName").innerText=shadowProfile.name;
  el("profileUID").innerText=shadowProfile.uid;
@@ -592,5 +1134,511 @@ window.addEventListener("load",()=>{
 });
 </script>
 
+
+<script>
+/* SHADOW CHARACTER COLLECTION */
+const SHADOW_CHARACTERS = [
+ {id:"kairo",name:"KAIRO",level:1,color:0x25213c,hair:0x111018,accent:0x9b58ff,symbol:"⚔"},
+ {id:"raiden",name:"RAIDEN",level:5,color:0x26334a,hair:0xc9d9ed,accent:0x55caff,symbol:"❄"},
+ {id:"akira",name:"AKIRA",level:10,color:0x482139,hair:0xd84c69,accent:0xff668c,symbol:"🔥"},
+ {id:"renji",name:"RENJI",level:15,color:0x29252b,hair:0xe9e5dc,accent:0xd8c5ff,symbol:"刀"},
+ {id:"kazan",name:"KAZAN",level:20,color:0x49301f,hair:0xff9a32,accent:0xff5a27,symbol:"☄"},
+ {id:"zero",name:"ZERO",level:30,color:0x171323,hair:0x211532,accent:0xc34dff,symbol:"♛"}
+];
+
+let shadowScene,shadowCamera,shadowRenderer,shadowHero,shadowFrame=0;
+let shadowKairoAsset=null,shadowKairoLoading=false,shadowKairoFailed=false;
+let shadowDrag=false,shadowLastX=0;
+
+function shadowLevel(){
+ return Math.max(1,Number(shadowProfile && shadowProfile.level)||1);
+}
+function currentShadowCharacter(){
+ const id=shadowProfile && shadowProfile.characterId || "kairo";
+ return SHADOW_CHARACTERS.find(c=>c.id===id && c.level<=shadowLevel()) || SHADOW_CHARACTERS[0];
+}
+function openCharacters(){
+ renderCharacterCollection();
+ showScreen("characterScreen");
+}
+function renderCharacterCollection(){
+ const level=shadowLevel();
+ const container=document.getElementById("characterCollection");
+ if(!container)return;
+ document.getElementById("collectionLevel").innerText=level;
+ container.innerHTML=SHADOW_CHARACTERS.map(c=>{
+  const unlocked=level>=c.level;
+  const selected=currentShadowCharacter().id===c.id;
+  return '<button class="character-card '+(!unlocked?'locked ':'')+(selected?'selected':'')+'" '+(unlocked?'onclick="selectShadowCharacter(\''+c.id+'\')"':'disabled')+'>'+
+   '<span class="character-symbol">'+(unlocked?'⚔':'🔒')+'</span>'+
+   '<b>'+c.name+'</b><small>ANIME WARRIOR</small>'+
+   (unlocked?(selected?'<span class="lock-label">✓ SELECTED</span>':'<span class="lock-label">UNLOCKED · SELECT</span>'):'<span class="lock-label">🔒 UNLOCK AT LEVEL '+c.level+'</span>')+
+   '</button>';
+ }).join("");
+}
+function selectShadowCharacter(id){
+ const c=SHADOW_CHARACTERS.find(x=>x.id===id);
+ if(!c || c.level>shadowLevel())return;
+ shadowProfile.characterId=id;
+ localStorage.setItem("shadowProfile",JSON.stringify(shadowProfile));
+ renderCharacterCollection();
+ updateShadowWorld();
+ message(c.name+" selected!");
+}
+function updateShadowWorld(){
+ if(!shadowProfile)return;
+ const c=currentShadowCharacter();
+ const name=document.getElementById("worldCharacterName");
+ const level=document.getElementById("worldLevel");
+ if(name)name.innerText=c.name;
+ if(level)level.innerText="LEVEL "+shadowLevel()+" · "+(shadowProfile.rank||"ROOKIE").toUpperCase();
+ if(shadowHero && shadowScene)buildShadowHero(c);
+}
+function shadowMaterial(color,metalness=0.15,roughness=0.55){
+ return new THREE.MeshStandardMaterial({color,metalness,roughness});
+}
+function shadowPart(parent,geometry,material,x,y,z){
+ const mesh=new THREE.Mesh(geometry,material);
+ mesh.position.set(x,y,z);
+ mesh.castShadow=false;
+ mesh.receiveShadow=false;
+ parent.add(mesh);
+ return mesh;
+}
+function buildShadowHero(character){
+ if(character.id==="kairo" && window.GLTFLoader && !shadowKairoFailed){
+  if(shadowHero){shadowScene.remove(shadowHero);shadowHero=null;}
+  if(shadowKairoAsset){
+   shadowHero=shadowKairoAsset.clone(true);
+   shadowHero.scale.setScalar(0.9);
+   shadowHero.position.set(0,0.12,0);
+   shadowScene.add(shadowHero);
+   return;
+  }
+  if(!shadowKairoLoading){
+   shadowKairoLoading=true;
+   new GLTFLoader().load("/models/kairo.glb",gltf=>{
+    shadowKairoAsset=gltf.scene;
+    shadowKairoLoading=false;
+    if(currentShadowCharacter().id==="kairo"){
+     shadowHero=shadowKairoAsset.clone(true);
+     shadowHero.scale.setScalar(0.9);
+     shadowHero.position.set(0,0.12,0);
+     shadowScene.add(shadowHero);
+    }
+   },undefined,error=>{
+    shadowKairoLoading=false;
+    shadowKairoFailed=true;
+    console.error("KAIRO model load failed:",error);
+    buildShadowHero(currentShadowCharacter());
+   });
+  }
+  return;
+ }
+ if(shadowHero)shadowScene.remove(shadowHero);
+ shadowHero=new THREE.Group();
+ const outfit=shadowMaterial(character.color);
+ const hair=shadowMaterial(character.hair);
+ const accent=shadowMaterial(character.accent,0.5,0.3);
+ const skin=shadowMaterial(0xe8b99d);
+ const dark=shadowMaterial(0x11101b);
+ // Legs and boots
+ for(const side of [-1,1]){
+  shadowPart(shadowHero,new THREE.CylinderGeometry(.105,.13,.72,8),outfit,side*.17,.52,0);
+  shadowPart(shadowHero,new THREE.BoxGeometry(.23,.14,.36),dark,side*.17,.13,.055);
+ }
+ // Torso, belt and shoulder armor
+ shadowPart(shadowHero,new THREE.CylinderGeometry(.27,.38,.88,8),outfit,0,1.38,0);
+ shadowPart(shadowHero,new THREE.BoxGeometry(.68,.13,.12),accent,0,1.12,.23);
+ for(const side of [-1,1]){
+  shadowPart(shadowHero,new THREE.SphereGeometry(.19,10,8),accent,side*.36,1.68,0);
+  shadowPart(shadowHero,new THREE.CylinderGeometry(.085,.105,.64,8),outfit,side*.43,1.27,0);
+  shadowPart(shadowHero,new THREE.SphereGeometry(.105,8,8),skin,side*.43,.92,0);
+ }
+ // Neck and anime-style head
+ shadowPart(shadowHero,new THREE.CylinderGeometry(.09,.11,.18,8),skin,0,1.91,0);
+ shadowPart(shadowHero,new THREE.SphereGeometry(.31,16,12),skin,0,2.22,0);
+ // Hair cap and spikes
+ shadowPart(shadowHero,new THREE.SphereGeometry(.325,12,9,0,Math.PI*2,0,Math.PI*.55),hair,0,2.34,-.025);
+ for(let i=0;i<7;i++){
+  const a=(i/7)*Math.PI*2;
+  const spike=shadowPart(shadowHero,new THREE.ConeGeometry(.105,.35,6),hair,Math.cos(a)*.2,2.53,Math.sin(a)*.19);
+  spike.rotation.z=-Math.cos(a)*.45;
+  spike.rotation.x=Math.sin(a)*.45;
+ }
+ // Eyes and face mask
+ for(const side of [-1,1]){
+  shadowPart(shadowHero,new THREE.SphereGeometry(.035,8,8),dark,side*.115,2.23,.278);
+ }
+ shadowPart(shadowHero,new THREE.BoxGeometry(.43,.12,.06),accent,0,2.08,.27);
+ // Back cape
+ const cape=shadowPart(shadowHero,new THREE.BoxGeometry(.65,.85,.07),dark,0,1.35,-.25);
+ cape.rotation.x=-.12;
+ // Character glow emblem
+ shadowPart(shadowHero,new THREE.OctahedronGeometry(.12),accent,0,1.48,.36);
+ shadowHero.position.y=.08;
+ shadowScene.add(shadowHero);
+}
+function initShadow3D(){
+ const canvas=document.getElementById("shadow3DCanvas");
+ if(!canvas || !window.THREE || shadowRenderer)return;
+ try{
+  shadowScene=new THREE.Scene();
+  shadowScene.background=new THREE.Color(0x100b20);
+  shadowScene.fog=new THREE.Fog(0x100b20,9,19);
+  shadowCamera=new THREE.PerspectiveCamera(38,1,.1,100);
+  shadowCamera.position.set(0,2.65,7.8);
+  shadowCamera.lookAt(0,1.35,0);
+  shadowRenderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false});
+  shadowRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+  shadowRenderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
+  shadowRenderer.outputColorSpace=THREE.SRGBColorSpace;
+  shadowScene.add(new THREE.HemisphereLight(0xcbb5ff,0x171020,2));
+  const key=new THREE.DirectionalLight(0xffffff,2.2);
+  key.position.set(3,6,5);shadowScene.add(key);
+  const purple=new THREE.PointLight(0x963dff,24,10);
+  purple.position.set(-3,2,1);shadowScene.add(purple);
+  const red=new THREE.PointLight(0x4b69ff,18,10);
+  red.position.set(3,2,-2);shadowScene.add(red);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),shadowMaterial(0x171126,.3,.8));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-.04;shadowScene.add(floor);
+  const grid=new THREE.GridHelper(18,28,0x69439a,0x302044);
+  grid.position.y=-.025;shadowScene.add(grid);
+  const platform=new THREE.Mesh(new THREE.CylinderGeometry(1.25,1.4,.18,48),shadowMaterial(0x35234e,.7,.3));
+  platform.position.y=.05;shadowScene.add(platform);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.3,.025,8,64),shadowMaterial(0xb66aff,.7,.25));
+  ring.rotation.x=Math.PI/2;ring.position.y=.16;shadowScene.add(ring);
+  buildShadowHero(currentShadowCharacter());
+  const resize=()=>{
+   if(!shadowRenderer)return;
+   const w=canvas.clientWidth||320,h=canvas.clientHeight||500;
+   shadowCamera.aspect=w/h;shadowCamera.updateProjectionMatrix();
+   shadowRenderer.setSize(w,h,false);
+  };
+  if(window.ResizeObserver)new ResizeObserver(resize).observe(canvas);
+  else window.addEventListener("resize",resize);
+  canvas.addEventListener("pointerdown",e=>{shadowDrag=true;shadowLastX=e.clientX;});
+  window.addEventListener("pointerup",()=>shadowDrag=false);
+  window.addEventListener("pointermove",e=>{
+   if(!shadowDrag||!shadowHero)return;
+   shadowHero.rotation.y+=(e.clientX-shadowLastX)*.012;
+   shadowLastX=e.clientX;
+  });
+  const animate=()=>{
+   shadowFrame=requestAnimationFrame(animate);
+   if(shadowHero){
+    shadowHero.position.y=.08+Math.sin(Date.now()*.0015)*.035;
+    if(!shadowDrag)shadowHero.rotation.y+=.0025;
+   }
+   ring.rotation.z+=.003;
+   shadowRenderer.render(shadowScene,shadowCamera);
+  };
+  resize();animate();updateShadowWorld();
+ }catch(error){console.error("SHADOW 3D:",error);}
+}
+window.addEventListener("load",()=>{
+ setTimeout(()=>{
+  if(window.THREE)initShadow3D();
+  else message("3D engine could not load. Check your internet connection.");
+ },300);
+});
+</script>
+
+
+<script>
+/* SHADOW ORIGINAL AUDIO SYSTEM */
+let shadowAudio=null,shadowMusicTimer=null,shadowMusicNodes=[],shadowMaster=null;
+let shadowMusicOn=localStorage.getItem("shadowMusic")!=="off";
+let shadowSfxOn=localStorage.getItem("shadowSfx")!=="off";
+let shadowAudioStarted=false;
+
+function shadowInitAudio(){
+ if(shadowAudio){
+  if(shadowAudio.state==="suspended")shadowAudio.resume();
+  return;
+ }
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC)return;
+ shadowAudio=new AC();
+ const compressor=shadowAudio.createDynamicsCompressor();
+ compressor.threshold.value=-12;
+ compressor.knee.value=18;
+ compressor.ratio.value=4;
+ compressor.attack.value=0.01;
+ compressor.release.value=0.2;
+ shadowMaster=shadowAudio.createGain();
+ shadowMaster.gain.value=2.2185;
+ shadowMaster.connect(compressor);
+ compressor.connect(shadowAudio.destination);
+ shadowAudio.resume();
+ shadowAudioStarted=true;
+ shadowUpdateAudioButtons();
+ if(shadowMusicOn)shadowStartMusic();
+}
+function shadowTone(freq,duration,type,volume,delay=0,channel="music"){
+ if(!shadowAudio||!shadowMaster)return;
+ const o=shadowAudio.createOscillator();
+ const filter=shadowAudio.createBiquadFilter();
+ const g=shadowAudio.createGain();
+ const level=channel==="sfx"?shadowSfxVolume:shadowMusicVolume;
+ const t=shadowAudio.currentTime+delay;
+ o.type=type;
+ o.frequency.setValueAtTime(freq,t);
+ filter.type="highpass";
+ filter.frequency.value=160;
+ filter.Q.value=0.7;
+ g.gain.setValueAtTime(0.0001,t);
+ g.gain.exponentialRampToValueAtTime(Math.max(volume*level,0.0002),t+0.04);
+ g.gain.exponentialRampToValueAtTime(0.0001,t+duration);
+ o.connect(filter);
+ filter.connect(g);
+ g.connect(shadowMaster);
+ o.start(t);
+ o.stop(t+duration+0.05);
+}
+
+function shadowStartMusic(){
+ if(!shadowAudio||shadowMusicTimer||!shadowMusicOn)return;
+ let step=0;
+ const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];
+ const play=()=>{
+  if(!shadowAudio||!shadowMusicOn)return;
+  const n=notes[step%notes.length];
+  shadowTone(n,0.42,"sine",0.10);
+  shadowTone(n*2,0.28,"triangle",0.025,0.04);
+  if(step%4===0){
+   shadowTone(n/2,0.8,"triangle",0.025,0.02);
+  }
+  step++;
+ };
+ play();
+ shadowMusicTimer=setInterval(play,500);
+}
+
+function shadowClickSound(){
+ if(!shadowAudio||!shadowSfxOn)return;
+ shadowTone(700,0.055,"sine",0.07,0,"sfx");
+ shadowTone(1050,0.04,"sine",0.035,0.025,"sfx");
+}
+function shadowStopMusic(){
+ if(shadowMusicTimer){clearInterval(shadowMusicTimer);shadowMusicTimer=null;}
+}
+function shadowClickSound(){
+ if(!shadowAudio||!shadowSfxOn)return;
+ shadowTone(620,0.07,"sine",0.16,0,"sfx");
+ shadowTone(930,0.045,"triangle",0.09,0.025,"sfx");
+}
+function toggleShadowMusic(){
+ shadowMusicOn=!shadowMusicOn;
+ localStorage.setItem("shadowMusic",shadowMusicOn?"on":"off");
+ if(shadowMusicOn){shadowInitAudio();shadowStartMusic();}
+ else shadowStopMusic();
+ shadowUpdateAudioButtons();
+}
+function toggleShadowSfx(){
+ shadowSfxOn=!shadowSfxOn;
+ localStorage.setItem("shadowSfx",shadowSfxOn?"on":"off");
+ shadowUpdateAudioButtons();
+}
+function shadowUpdateAudioButtons(){
+ const m=document.getElementById("musicToggle");
+ const e=document.getElementById("sfxToggle");
+ if(m)m.textContent=shadowMusicOn?"ON":"OFF";
+ if(e)e.textContent=shadowSfxOn?"ON":"OFF";
+}
+document.addEventListener("pointerdown",()=>{shadowInitAudio();},{once:true});
+document.addEventListener("click",e=>{
+ const button=e.target.closest("button");
+ if(button){shadowInitAudio();shadowClickSound();}
+},true);
+function setShadowVolume(type,value){
+ const v=Math.max(0,Math.min(100,Number(value)))/100;
+ if(type==="music"){
+  shadowMusicVolume=v;
+  localStorage.setItem("shadowMusicVolume",value);
+  const label=document.getElementById("musicVolumeLabel");
+  if(label)label.textContent=value+"%";
+ }else{
+  shadowSfxVolume=v;
+  localStorage.setItem("shadowSfxVolume",value);
+  const label=document.getElementById("sfxVolumeLabel");
+  if(label)label.textContent=value+"%";
+ }
+}
+function shadowLoadVolumes(){
+ shadowMusicVolume=Number(localStorage.getItem("shadowMusicVolume")??75)/100;
+ shadowSfxVolume=Number(localStorage.getItem("shadowSfxVolume")??80)/100;
+ const m=document.getElementById("musicVolume");
+ const e=document.getElementById("sfxVolume");
+ if(m){m.value=Math.round(shadowMusicVolume*100);document.getElementById("musicVolumeLabel").textContent=m.value+"%";}
+ if(e){e.value=Math.round(shadowSfxVolume*100);document.getElementById("sfxVolumeLabel").textContent=e.value+"%";}
+ shadowUpdateAudioButtons();
+}
+let shadowMusicVolume=Number(localStorage.getItem("shadowMusicVolume")??75)/100;
+let shadowSfxVolume=Number(localStorage.getItem("shadowSfxVolume")??80)/100;
+document.addEventListener("DOMContentLoaded",shadowLoadVolumes);
+</script>
+
 </body>
 </html>
+<script>
+let shadowVoiceStream=null;
+let shadowVoicePeers=new Map();
+let shadowVoiceActive=false;
+
+function shadowVoiceStatus(t){
+ const e=document.getElementById("shadowVoiceStatus");
+ if(e)e.textContent=t;
+}
+
+function shadowVoiceSetRoom(players){
+ const dock=document.getElementById("shadowVoiceDock");
+ if(soloMode){if(dock)dock.style.display="none";shadowVoiceActive=false;return;}
+ if(dock)dock.style.display="block";
+ shadowVoiceActive=true;
+ shadowVoiceStatus("VOICE CHAT · MIC OFF");
+}
+</script>
+<script>
+function shadowVoiceEnsurePeer(id){
+ if(shadowVoicePeers.has(id))return shadowVoicePeers.get(id);
+ const pc=new RTCPeerConnection({
+  iceServers:[{urls:"stun:stun.l.google.com:19302"}]
+ });
+ shadowVoicePeers.set(id,pc);
+ pc.onicecandidate=e=>{
+  if(e.candidate)window.shadowSocket.emit("voice:signal",{
+   target:id,candidate:e.candidate
+  });
+ };
+ pc.ontrack=e=>{
+  let a=document.getElementById("shadowAudio_"+id);
+  if(!a){
+   a=document.createElement("audio");
+   a.id="shadowAudio_"+id;
+   a.autoplay=true;
+   document.body.appendChild(a);
+  }
+  a.srcObject=e.streams[0];
+ };
+ if(shadowVoiceStream){
+  shadowVoiceStream.getTracks().forEach(t=>pc.addTrack(t,shadowVoiceStream));
+ }
+ return pc;
+}
+</script>
+<script>
+window.shadowSocket.on("voice:signal",async data=>{
+ if(!data||!data.from)return;
+ const pc=shadowVoiceEnsurePeer(data.from);
+ try{
+  if(data.description){
+   await pc.setRemoteDescription(data.description);
+   if(data.description.type==="offer"){
+    const answer=await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    window.shadowSocket.emit("voice:signal",{
+     target:data.from,description:pc.localDescription
+    });
+   }
+  }
+  if(data.candidate){
+   await pc.addIceCandidate(data.candidate);
+  }
+ }catch(err){
+  console.error("Voice signal error:",err);
+ }
+});
+</script>
+<script>
+async function shadowVoiceToggle(){
+ const btn=document.getElementById("shadowMicButton");
+
+ if(!shadowVoiceStream){
+  try{
+   shadowVoiceStream=await navigator.mediaDevices.getUserMedia({
+    audio:{
+     echoCancellation:true,
+     noiseSuppression:true,
+     autoGainControl:true
+    }
+   });
+  }catch(err){
+   shadowVoiceStatus("MIC ERROR · ALLOW MICROPHONE");
+   console.error(err);
+   return;
+  }
+ }
+
+ const tracks=shadowVoiceStream.getAudioTracks();
+ const enabled=!tracks[0].enabled;
+ tracks.forEach(t=>t.enabled=enabled);
+
+ btn.textContent=enabled?"🎙️ MIC ON · MUTE":"🔇 MIC OFF · UNMUTE";
+ btn.classList.toggle("muted",!enabled);
+ shadowVoiceStatus(enabled?"VOICE CHAT · MIC ON":"VOICE CHAT · MIC OFF");
+ if(enabled)await shadowVoiceConnectPlayers();
+}
+</script>
+<script>
+let shadowVoicePlayers=[];
+
+function shadowVoiceSetRoom(players){
+ shadowVoicePlayers=players||[];
+ const dock=document.getElementById("shadowVoiceDock");
+ if(soloMode){if(dock)dock.style.display="none";shadowVoiceActive=false;return;}
+ if(dock)dock.style.display="block";
+ shadowVoiceActive=true;
+ shadowVoiceStatus("VOICE CHAT · MIC OFF");
+}
+
+window.shadowSocket.on("roomCreated",data=>{
+ shadowVoiceSetRoom(data.players);
+});
+
+window.shadowSocket.on("roomJoined",data=>{
+ shadowVoiceSetRoom(data.players);
+});
+
+window.shadowSocket.on("playerUpdate",players=>{
+ shadowVoicePlayers=players||[];
+ if(shadowVoiceStream && shadowVoiceStream.getAudioTracks().some(t=>t.enabled)){
+  shadowVoiceConnectPlayers();
+ }
+});
+</script>
+<script>
+async function shadowVoiceConnectPlayers(){
+ if(!shadowVoiceStream)return;
+ const myId=window.shadowSocket.id;
+
+ for(const player of shadowVoicePlayers){
+  if(!player.id||player.id===myId||myId>player.id)continue;
+
+  const pc=shadowVoiceEnsurePeer(player.id);
+  if(pc.signalingState!=="stable")continue;
+
+  try{
+   const offer=await pc.createOffer();
+   await pc.setLocalDescription(offer);
+   window.shadowSocket.emit("voice:signal",{
+    target:player.id,
+    description:pc.localDescription
+   });
+  }catch(err){
+   console.error("Voice offer error:",err);
+  }
+ }
+}
+</script>
+<script>
+window.shadowSocket.on("voice:peer-left",data=>{
+ if(!data||!data.id)return;
+ const pc=shadowVoicePeers.get(data.id);
+ if(pc)pc.close();
+ shadowVoicePeers.delete(data.id);
+ const audio=document.getElementById("shadowAudio_"+data.id);
+ if(audio)audio.remove();
+ console.log("Voice peer disconnected:",data.id);
+});
+</script>
